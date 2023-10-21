@@ -15,12 +15,19 @@ UTP_WeaponComponent::UTP_WeaponComponent()
 {
 	// Default offset from the character location for projectiles to spawn
 	MuzzleOffset = FVector(100.0f, 0.0f, 10.0f);
+	
+	mMaxAmmo = 10;
+	mCurrentAmmo = mMaxAmmo;
 }
-
 
 void UTP_WeaponComponent::Fire()
 {
 	if (Character == nullptr || Character->GetController() == nullptr)
+	{
+		return;
+	}
+
+	if (mCurrentAmmo == 0)
 	{
 		return;
 	}
@@ -61,6 +68,29 @@ void UTP_WeaponComponent::Fire()
 			AnimInstance->Montage_Play(FireAnimation, 1.f);
 		}
 	}
+
+	SetCurrnetAmmo(mCurrentAmmo - 1);
+	if (GEngine)
+	{ 
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, FString::Printf(TEXT("Ammo left: %d"), mCurrentAmmo));
+	}
+}
+
+void UTP_WeaponComponent::Reload()
+{
+	if (Character == nullptr || Character->GetController() == nullptr)
+	{
+		return;
+	}
+
+	SetCurrnetAmmo(mMaxAmmo);
+
+	if (GEngine)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Reload happened"));
+	}
+
+	//TODO Sound of reload
 }
 
 void UTP_WeaponComponent::AttachWeapon(AFutureGameExerciseCharacter* TargetCharacter)
@@ -93,6 +123,9 @@ void UTP_WeaponComponent::AttachWeapon(AFutureGameExerciseCharacter* TargetChara
 		{
 			// Fire
 			EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Triggered, this, &UTP_WeaponComponent::Fire);
+
+			// Reload
+			EnhancedInputComponent->BindAction(ReloadAction, ETriggerEvent::Triggered, this, &UTP_WeaponComponent::Reload);
 		}
 	}
 }
@@ -111,4 +144,9 @@ void UTP_WeaponComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 			Subsystem->RemoveMappingContext(FireMappingContext);
 		}
 	}
+}
+
+void UTP_WeaponComponent::SetCurrnetAmmo(const int& value)
+{
+	mCurrentAmmo = FMath::Clamp(value, 0, mMaxAmmo);
 }

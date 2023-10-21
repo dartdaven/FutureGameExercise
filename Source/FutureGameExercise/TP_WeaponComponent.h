@@ -38,6 +38,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	class UInputAction* FireAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class UInputAction* ReloadAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+	int mMaxAmmo; //Can't do unsigned here because blueprint does not support it
+
 	/** Sets default values for this component's properties */
 	UTP_WeaponComponent();
 
@@ -49,6 +55,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Weapon")
 	void Fire();
 
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
+	void Reload();
+
+
 protected:
 	/** Ends gameplay for this component. */
 	UFUNCTION()
@@ -57,4 +67,8 @@ protected:
 private:
 	/** The Character holding this weapon*/
 	AFutureGameExerciseCharacter* Character;
+
+	void SetCurrnetAmmo(const int& value);
+	
+	int mCurrentAmmo;
 };

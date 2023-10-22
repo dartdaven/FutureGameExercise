@@ -58,6 +58,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Weapon")
 	void Reload();
 
+	UFUNCTION(BlueprintCallable, Category = Inventory)
+	const int& GetCurrentAmmo() const;
+
 protected:
 	/** Ends gameplay for this component. */
 	UFUNCTION()

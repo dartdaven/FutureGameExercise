@@ -90,9 +90,14 @@ void UTP_WeaponComponent::Reload()
 	}
 
 	int ammoNeeded = mMaxAmmo - mCurrentAmmo;
-	SetCurrnetAmmo(Character->TakeOutAmmo(ammoNeeded));
+	SetCurrnetAmmo(mCurrentAmmo + Character->TakeOutAmmo(ammoNeeded));
 
 	//TODO Sound of reload
+}
+
+const int& UTP_WeaponComponent::GetCurrentAmmo() const
+{
+	return mCurrentAmmo;
 }
 
 void UTP_WeaponComponent::AttachWeapon(AFutureGameExerciseCharacter* TargetCharacter)

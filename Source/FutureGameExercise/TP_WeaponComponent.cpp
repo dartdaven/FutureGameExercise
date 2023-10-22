@@ -29,6 +29,7 @@ void UTP_WeaponComponent::Fire()
 
 	if (mCurrentAmmo == 0)
 	{
+		//TODO Sound "Out of Ammo"
 		return;
 	}
 
@@ -83,12 +84,13 @@ void UTP_WeaponComponent::Reload()
 		return;
 	}
 
-	SetCurrnetAmmo(mMaxAmmo);
-
 	if (GEngine)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Reload happened"));
 	}
+
+	int ammoNeeded = mMaxAmmo - mCurrentAmmo;
+	SetCurrnetAmmo(Character->TakeOutAmmo(ammoNeeded));
 
 	//TODO Sound of reload
 }

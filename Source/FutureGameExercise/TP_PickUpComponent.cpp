@@ -18,6 +18,11 @@ void UTP_PickUpComponent::BeginPlay()
 
 void UTP_PickUpComponent::OnSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	if (GEngine)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Overlap happened"));
+	}
+
 	// Checking if it is a First Person Character overlapping
 	AFutureGameExerciseCharacter* Character = Cast<AFutureGameExerciseCharacter>(OtherActor);
 	if(Character != nullptr)

@@ -39,6 +39,8 @@ AFutureGameExerciseCharacter::AFutureGameExerciseCharacter()
 	//Mesh1P->SetRelativeRotation(FRotator(0.9f, -19.19f, 5.2f));
 	Mesh1P->SetRelativeLocation(FVector(-30.f, 0.f, -150.f));
 
+	mMaxAmmoAmount = 30;
+	mAmmoAmount = 0;
 }
 
 void AFutureGameExerciseCharacter::BeginPlay()
@@ -115,4 +117,34 @@ void AFutureGameExerciseCharacter::SetHasRifle(bool bNewHasRifle)
 bool AFutureGameExerciseCharacter::GetHasRifle()
 {
 	return bHasRifle;
+}
+
+void AFutureGameExerciseCharacter::FillAmmo(const int& value)
+{
+	mAmmoAmount = FMath::Clamp(mAmmoAmount + value, 0, mMaxAmmoAmount);
+
+	if (GEngine)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, FString::Printf(TEXT("Current Ammo %d"), mAmmoAmount));
+	}
+}
+
+int AFutureGameExerciseCharacter::TakeOutAmmo(const int& amountRequested)
+{
+	if (mAmmoAmount >= amountRequested)
+	{
+		mAmmoAmount -= amountRequested;
+		return amountRequested;
+	}
+	else
+	{
+		int toReturn = mAmmoAmount;
+		mAmmoAmount = 0;
+		return toReturn;
+	}
+}
+
+const int& AFutureGameExerciseCharacter::GetAmmoAmount() const
+{
+	return mAmmoAmount;
 }

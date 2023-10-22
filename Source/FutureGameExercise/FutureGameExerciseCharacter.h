@@ -57,6 +57,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Weapon)
 	bool bHasRifle;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Weapon)
+	int mMaxAmmoAmount;
+
 	/** Setter to set the bool */
 	UFUNCTION(BlueprintCallable, Category = Weapon)
 	void SetHasRifle(bool bNewHasRifle);
@@ -64,6 +67,15 @@ public:
 	/** Getter for the bool */
 	UFUNCTION(BlueprintCallable, Category = Weapon)
 	bool GetHasRifle();
+
+	UFUNCTION(BlueprintCallable, Category = Inventory)
+	void FillAmmo(const int& value);
+
+	UFUNCTION(BlueprintCallable, Category = Inventory)
+	int TakeOutAmmo(const int& amountRequested);
+
+	UFUNCTION(BlueprintCallable, Category = Inventory)
+	const int& GetAmmoAmount() const;
 
 protected:
 	/** Called for movement input */
@@ -82,6 +94,10 @@ public:
 	USkeletalMeshComponent* GetMesh1P() const { return Mesh1P; }
 	/** Returns FirstPersonCameraComponent subobject **/
 	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
+
+private:
+	
+	int mAmmoAmount;
 
 };
 

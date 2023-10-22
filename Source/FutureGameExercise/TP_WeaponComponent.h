@@ -58,7 +58,6 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Weapon")
 	void Reload();
 
-
 protected:
 	/** Ends gameplay for this component. */
 	UFUNCTION()
@@ -70,5 +69,5 @@ private:
 
 	void SetCurrnetAmmo(const int& value);
 	
-	int mCurrentAmmo;
+	int mCurrentAmmo; //Unsigned preferable
 };

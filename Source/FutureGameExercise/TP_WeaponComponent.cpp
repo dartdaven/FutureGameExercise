@@ -10,6 +10,8 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 
+#include "HelpingTools.h"
+
 // Sets default values for this component's properties
 UTP_WeaponComponent::UTP_WeaponComponent()
 {
@@ -70,11 +72,17 @@ void UTP_WeaponComponent::Fire()
 		}
 	}
 
-	SetCurrnetAmmo(mCurrentAmmo - 1);
-	if (GEngine)
-	{ 
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, FString::Printf(TEXT("Ammo left: %d"), mCurrentAmmo));
-	}
+	--mCurrentAmmo;
+	
+
+	//Help::DisplayDebugMessage(FString::Printf(TEXT("Ammo left: %d"), mCurrentAmmo));
+
+	DISPLAY_DEBUG_MESSAGE("Ammo left %d: ", mCurrentAmmo)
+
+	//if (GEngine)
+	//{ 
+	//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, FString::Printf(TEXT("Ammo left: %d"), mCurrentAmmo));
+	//}
 }
 
 void UTP_WeaponComponent::Reload()
@@ -90,7 +98,7 @@ void UTP_WeaponComponent::Reload()
 	}
 
 	int ammoNeeded = mMaxAmmo - mCurrentAmmo;
-	SetCurrnetAmmo(mCurrentAmmo + Character->TakeOutAmmo(ammoNeeded));
+	mCurrentAmmo += Character->TakeOutAmmo(ammoNeeded);
 
 	//TODO Sound of reload
 }
@@ -151,9 +159,4 @@ void UTP_WeaponComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 			Subsystem->RemoveMappingContext(FireMappingContext);
 		}
 	}
-}
-
-void UTP_WeaponComponent::SetCurrnetAmmo(const int& value)
-{
-	mCurrentAmmo = FMath::Clamp(value, 0, mMaxAmmo);
 }

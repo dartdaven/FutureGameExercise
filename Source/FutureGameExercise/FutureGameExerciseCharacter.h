@@ -98,6 +98,5 @@ public:
 private:
 	
 	int mAmmoAmount;
-
 };
 

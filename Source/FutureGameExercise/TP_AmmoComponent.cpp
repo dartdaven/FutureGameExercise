@@ -9,14 +9,11 @@ UTP_AmmoComponent::UTP_AmmoComponent()
 
 void UTP_AmmoComponent::FillAmmo(AFutureGameExerciseCharacter* TargetCharacter)
 {
-	Character = TargetCharacter;
-
 	// Check that the character is valid, and has no rifle yet
-	if (Character == nullptr)
+	if (TargetCharacter == nullptr)
 	{
 		return;
 	}
 
-	Character->FillAmmo(mAmountOfAmmo);
-
+	TargetCharacter->FillAmmo(mAmountOfAmmo);
 }

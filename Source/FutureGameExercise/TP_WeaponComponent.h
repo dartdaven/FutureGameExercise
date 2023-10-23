@@ -41,7 +41,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* ReloadAction;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay, meta = (ClampMin = "0", ClampMax = "20"))
 	int mMaxAmmo; //Can't do unsigned here because blueprint does not support it
 
 	/** Sets default values for this component's properties */
@@ -69,8 +69,6 @@ protected:
 private:
 	/** The Character holding this weapon*/
 	AFutureGameExerciseCharacter* Character;
-
-	void SetCurrnetAmmo(const int& value);
 	
 	int mCurrentAmmo; //Unsigned preferable
 };

@@ -21,8 +21,4 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Weapon")
 	void FillAmmo(AFutureGameExerciseCharacter* TargetCharacter);
-
-private:
-	/** The Character holding this weapon*/
-	AFutureGameExerciseCharacter* Character;
 };

@@ -42,7 +42,7 @@ public:
 	class UInputAction* ReloadAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay, meta = (ClampMin = "0", ClampMax = "20"))
-	int mMaxAmmo; //Can't do unsigned here because blueprint does not support it
+	int mMaxAmmo;
 
 	/** Sets default values for this component's properties */
 	UTP_WeaponComponent();

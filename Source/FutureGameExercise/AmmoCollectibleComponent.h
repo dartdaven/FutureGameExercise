@@ -4,17 +4,17 @@
 
 #include "CoreMinimal.h"
 #include "Components/PrimitiveComponent.h"
-#include "TP_AmmoComponent.generated.h"
+#include "AmmoCollectibleComponent.generated.h"
 
 class AFutureGameExerciseCharacter;
 
 UCLASS(Blueprintable, BlueprintType, ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
-class FUTUREGAMEEXERCISE_API UTP_AmmoComponent : public UPrimitiveComponent
+class FUTUREGAMEEXERCISE_API UAmmoCollectibleComponent : public UPrimitiveComponent
 {
 	GENERATED_BODY()
 
 public:
-	UTP_AmmoComponent();
+	UAmmoCollectibleComponent();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 	int mAmountOfAmmo;

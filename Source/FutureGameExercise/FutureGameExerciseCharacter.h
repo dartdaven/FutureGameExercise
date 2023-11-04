@@ -57,7 +57,7 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Weapon)
 	bool bHasRifle;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Weapon)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Inventory)
 	int mMaxAmmoAmount;
 
 	/** Setter to set the bool */

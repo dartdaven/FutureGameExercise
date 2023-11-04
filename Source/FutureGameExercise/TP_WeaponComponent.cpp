@@ -74,15 +74,7 @@ void UTP_WeaponComponent::Fire()
 
 	--mCurrentAmmo;
 	
-
-	//Help::DisplayDebugMessage(FString::Printf(TEXT("Ammo left: %d"), mCurrentAmmo));
-
-	DISPLAY_DEBUG_MESSAGE("Ammo left %d: ", mCurrentAmmo)
-
-	//if (GEngine)
-	//{ 
-	//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, FString::Printf(TEXT("Ammo left: %d"), mCurrentAmmo));
-	//}
+	Help::DisplayDebugMessage(TEXT("Ammo left: %d "), mCurrentAmmo);
 }
 
 void UTP_WeaponComponent::Reload()
@@ -92,10 +84,7 @@ void UTP_WeaponComponent::Reload()
 		return;
 	}
 
-	if (GEngine)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Reload happened"));
-	}
+	Help::DisplayDebugMessage(TEXT("Reload happened"));
 
 	int ammoNeeded = mMaxAmmo - mCurrentAmmo;
 	mCurrentAmmo += Character->TakeOutAmmo(ammoNeeded);

@@ -11,6 +11,8 @@
 #include "InputActionValue.h"
 #include "Engine/LocalPlayer.h"
 
+#include "HelpingTools.h"
+
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
 //////////////////////////////////////////////////////////////////////////
@@ -123,10 +125,7 @@ void AFutureGameExerciseCharacter::FillAmmo(const int& value)
 {
 	mAmmoAmount = FMath::Clamp(mAmmoAmount + value, 0, mMaxAmmoAmount);
 
-	if (GEngine)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, FString::Printf(TEXT("Current Ammo %d"), mAmmoAmount));
-	}
+	Help::DisplayDebugMessage(TEXT("Current Ammo: %d"), mAmmoAmount);
 }
 
 int AFutureGameExerciseCharacter::TakeOutAmmo(const int& amountRequested)

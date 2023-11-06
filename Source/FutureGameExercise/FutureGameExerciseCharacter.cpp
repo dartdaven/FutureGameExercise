@@ -1,6 +1,5 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
-
 #include "FutureGameExerciseCharacter.h"
+
 #include "FutureGameExerciseProjectile.h"
 #include "Animation/AnimInstance.h"
 #include "Camera/CameraComponent.h"
@@ -124,6 +123,8 @@ bool AFutureGameExerciseCharacter::GetHasRifle()
 void AFutureGameExerciseCharacter::FillAmmo(const int& value)
 {
 	mAmmoAmount = FMath::Clamp(mAmmoAmount + value, 0, mMaxAmmoAmount);
+
+	//OnFillAmmo.Broadcast();
 
 	Help::DisplayDebugMessage(TEXT("Current Ammo: %d"), mAmmoAmount);
 }

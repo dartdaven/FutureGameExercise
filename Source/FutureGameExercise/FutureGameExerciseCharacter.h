@@ -15,6 +15,7 @@ class UInputMappingContext;
 struct FInputActionValue;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
+//DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnFillAmmo);
 
 UCLASS(config=Game)
 class AFutureGameExerciseCharacter : public ACharacter
@@ -43,6 +44,9 @@ class AFutureGameExerciseCharacter : public ACharacter
 	
 public:
 	AFutureGameExerciseCharacter();
+
+	//UPROPERTY(BlueprintAssignable, Category = "Interaction")
+	//FOnFillAmmo OnFillAmmo;
 
 protected:
 	virtual void BeginPlay();

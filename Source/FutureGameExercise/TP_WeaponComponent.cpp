@@ -1,7 +1,5 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
-
-
 #include "TP_WeaponComponent.h"
+
 #include "FutureGameExerciseCharacter.h"
 #include "FutureGameExerciseProjectile.h"
 #include "GameFramework/PlayerController.h"

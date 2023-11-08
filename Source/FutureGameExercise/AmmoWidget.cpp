@@ -5,12 +5,12 @@
 
 #include "HelpingTools.h"
 
-void UAmmoWidget::SetWeapon(UTP_WeaponComponent* a_Weapon)
+void UAmmoWidget::SetWeapon(UAmmoWeaponComponent* a_Weapon)
 {
 	Weapon = a_Weapon;
 }
 
-UTP_WeaponComponent* UAmmoWidget::GetWeapon() const
+UAmmoWeaponComponent* UAmmoWidget::GetWeapon() const
 {
 	return Weapon;
 }

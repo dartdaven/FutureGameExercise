@@ -15,21 +15,12 @@ UTP_WeaponComponent::UTP_WeaponComponent()
 {
 	// Default offset from the character location for projectiles to spawn
 	MuzzleOffset = FVector(100.0f, 0.0f, 10.0f);
-	
-	mMaxAmmo = 10;
-	mCurrentAmmo = mMaxAmmo;
 }
 
 void UTP_WeaponComponent::Fire()
 {
 	if (Character == nullptr || Character->GetController() == nullptr)
 	{
-		return;
-	}
-
-	if (mCurrentAmmo == 0)
-	{
-		//TODO Sound "Out of Ammo"
 		return;
 	}
 
@@ -69,30 +60,6 @@ void UTP_WeaponComponent::Fire()
 			AnimInstance->Montage_Play(FireAnimation, 1.f);
 		}
 	}
-
-	--mCurrentAmmo;
-	
-	Help::DisplayDebugMessage(TEXT("Ammo left: %d "), mCurrentAmmo);
-}
-
-void UTP_WeaponComponent::Reload()
-{
-	if (Character == nullptr || Character->GetController() == nullptr)
-	{
-		return;
-	}
-
-	Help::DisplayDebugMessage(TEXT("Reload happened"));
-
-	int ammoNeeded = mMaxAmmo - mCurrentAmmo;
-	mCurrentAmmo += Character->TakeOutAmmo(ammoNeeded);
-
-	//TODO Sound of reload
-}
-
-const int& UTP_WeaponComponent::GetCurrentAmmo() const
-{
-	return mCurrentAmmo;
 }
 
 void UTP_WeaponComponent::AttachWeapon(AFutureGameExerciseCharacter* TargetCharacter)
@@ -126,8 +93,6 @@ void UTP_WeaponComponent::AttachWeapon(AFutureGameExerciseCharacter* TargetChara
 			// Fire
 			EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Triggered, this, &UTP_WeaponComponent::Fire);
 
-			// Reload
-			EnhancedInputComponent->BindAction(ReloadAction, ETriggerEvent::Triggered, this, &UTP_WeaponComponent::Reload);
 		}
 	}
 }

@@ -6,7 +6,7 @@
 
 class AFutureGameExerciseCharacter;
 class UTextBlock;
-class UTP_WeaponComponent;
+class UAmmoWeaponComponent;
 
 
 UCLASS()
@@ -27,14 +27,14 @@ public:
 	//AFutureGameExerciseCharacter* Character;
 
 	UFUNCTION(BlueprintCallable)
-	void SetWeapon(UTP_WeaponComponent* a_Weapon);
+	void SetWeapon(UAmmoWeaponComponent* a_Weapon);
 
 	UFUNCTION(BlueprintCallable)
-	UTP_WeaponComponent* GetWeapon() const;
+	UAmmoWeaponComponent* GetWeapon() const;
 
 //protected:
 //	void NativeOnInitialized() override;
 
 private:
-	UTP_WeaponComponent* Weapon;
+	UAmmoWeaponComponent* Weapon;
 };

@@ -4,6 +4,8 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 
+#include "HelpingTools.h"
+
 void UHeatWeaponComponent::AttachWeapon(AFutureGameExerciseCharacter* TargetCharacter)
 {
 	//---- Start of the Super section ----
@@ -41,18 +43,24 @@ void UHeatWeaponComponent::AttachWeapon(AFutureGameExerciseCharacter* TargetChar
 
 void UHeatWeaponComponent::StartFire()
 {
+	if (GetWorld()->GetTimerManager().IsTimerActive(TimerHandle_Cooldown))
+	{
+		//Help::DisplayDebugMessage(TEXT("Cooldown is pending"));
+		float CooldownTime = GetWorld()->GetTimerManager().GetTimerRemaining(TimerHandle_Cooldown);
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle_HandleRefire, this, &UHeatWeaponComponent::StartFire, CooldownTime, false);
+		
+		return;
+	}
+
 	UTP_WeaponComponent::Fire();
 
-	if (IsValid(Character))
-	{
-		Character->GetWorldTimerManager().SetTimer(TimerHandle_HandleRefire, this, &UTP_WeaponComponent::Fire, FireInterval, true);
-	}
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle_HandleRefire, this, &UTP_WeaponComponent::Fire, FireInterval, true);
 }
 
 void UHeatWeaponComponent::StopFire()
 {
-	if (IsValid(Character))
-	{
-		Character->GetWorldTimerManager().ClearTimer(TimerHandle_HandleRefire);
-	}
+	float TimeRemaining = GetWorld()->GetTimerManager().GetTimerRemaining(TimerHandle_HandleRefire);
+	GetWorld()->GetTimerManager().ClearTimer(TimerHandle_HandleRefire);
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle_Cooldown, TimeRemaining, false);
+	//Help::DisplayDebugMessage(TEXT("Timer is set to %f seconds"), TimeRemaining);
 }

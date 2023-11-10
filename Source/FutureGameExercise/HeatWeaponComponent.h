@@ -12,7 +12,7 @@ class FUTUREGAMEEXERCISE_API UHeatWeaponComponent : public UTP_WeaponComponent
 public:
 	//seconds to wait between shots
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay, meta = (ClampMin = "0", ClampMax = "2"))
-	float FireInterval {0.2f};
+	float FireInterval {0.5f};
 	
 	void AttachWeapon(AFutureGameExerciseCharacter* TargetCharacter) override;
 	
@@ -27,4 +27,5 @@ private:
 	bool bIsOverheated;
 
 	FTimerHandle TimerHandle_HandleRefire;
+	FTimerHandle TimerHandle_Cooldown;
 };

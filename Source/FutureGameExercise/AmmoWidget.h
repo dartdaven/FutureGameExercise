@@ -8,7 +8,6 @@ class AFutureGameExerciseCharacter;
 class UTextBlock;
 class UAmmoWeaponComponent;
 
-
 UCLASS()
 class FUTUREGAMEEXERCISE_API UAmmoWidget : public UUserWidget
 {

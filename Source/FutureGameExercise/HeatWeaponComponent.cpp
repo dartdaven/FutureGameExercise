@@ -6,6 +6,13 @@
 
 #include "HelpingTools.h"
 
+void UHeatWeaponComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+{
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	Temperature = FMath::Clamp(Temperature - (DeltaTime * CooldownRate), 0, MaxTemperature);
+}
+
 void UHeatWeaponComponent::AttachWeapon(AFutureGameExerciseCharacter* TargetCharacter)
 {
 	//---- Start of the Super section ----
@@ -43,24 +50,77 @@ void UHeatWeaponComponent::AttachWeapon(AFutureGameExerciseCharacter* TargetChar
 
 void UHeatWeaponComponent::StartFire()
 {
+	//Check to not to overcome FireInterval
 	if (GetWorld()->GetTimerManager().IsTimerActive(TimerHandle_Cooldown))
-	{
-		//Help::DisplayDebugMessage(TEXT("Cooldown is pending"));
+	{	
 		float CooldownTime = GetWorld()->GetTimerManager().GetTimerRemaining(TimerHandle_Cooldown);
 		GetWorld()->GetTimerManager().SetTimer(TimerHandle_HandleRefire, this, &UHeatWeaponComponent::StartFire, CooldownTime, false);
 		
 		return;
 	}
 
-	UTP_WeaponComponent::Fire();
+	Fire();
 
-	GetWorld()->GetTimerManager().SetTimer(TimerHandle_HandleRefire, this, &UTP_WeaponComponent::Fire, FireInterval, true);
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle_HandleRefire, this, &UHeatWeaponComponent::Fire, FireInterval, true);
 }
 
 void UHeatWeaponComponent::StopFire()
 {
 	float TimeRemaining = GetWorld()->GetTimerManager().GetTimerRemaining(TimerHandle_HandleRefire);
 	GetWorld()->GetTimerManager().ClearTimer(TimerHandle_HandleRefire);
-	GetWorld()->GetTimerManager().SetTimer(TimerHandle_Cooldown, TimeRemaining, false);
-	//Help::DisplayDebugMessage(TEXT("Timer is set to %f seconds"), TimeRemaining);
+	
+	if (!IsOverheated())
+	{
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle_Cooldown, TimeRemaining, false);
+	}
+}
+
+void UHeatWeaponComponent::Fire()
+{
+	if (IsOverheated())
+	{
+		return;
+	}
+
+	UTP_WeaponComponent::Fire();
+
+	FScopeLock Lock(&TemperatureMutex);
+
+	Temperature += TemperaturePerShot;
+
+	if (Temperature >= MaxTemperature)
+	{
+		Temperature = MaxTemperature;
+
+		bIsOverheated = true;
+
+		OnOverheatEvent.Broadcast();
+
+		float TimeToCooldown = MaxTemperature * (1 - CooldownPercentPoint) / CooldownRate;
+
+		//It may be a potential problem to use the same Timer as between shots, but I don't face it
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle_Cooldown, this, &UHeatWeaponComponent::ClearOverheat, TimeToCooldown, false);
+	}
+}
+
+const float& UHeatWeaponComponent::GetTemperature() const
+{
+	return Temperature;
+}
+
+const float& UHeatWeaponComponent::GetMaxTemperature() const
+{
+	return MaxTemperature;
+}
+
+bool UHeatWeaponComponent::IsOverheated() const
+{
+	return bIsOverheated;
+}
+
+void UHeatWeaponComponent::ClearOverheat()
+{
+	bIsOverheated = false;
+
+	OnOverheatEvent.Broadcast();
 }

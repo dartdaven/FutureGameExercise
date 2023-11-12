@@ -47,6 +47,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Weapon")
 	virtual void Fire();
 
+	AFutureGameExerciseCharacter* GetCharacter() const;
+
 protected:
 	/** Ends gameplay for this component. */
 	UFUNCTION()

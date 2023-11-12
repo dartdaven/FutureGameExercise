@@ -20,10 +20,12 @@ void UAmmoWeaponComponent::Reload()
 		return;
 	}
 
-	Help::DisplayDebugMessage(TEXT("Reload happened"));
-
 	int ammoNeeded = MaxAmmo - CurrentAmmo;
 	CurrentAmmo += Character->TakeOutAmmo(ammoNeeded);
+
+	OnAmmoChange.Broadcast();
+
+	Help::DisplayDebugMessage(TEXT("Reload happened"));
 
 	//TODO Sound of reload
 }
@@ -46,6 +48,8 @@ void UAmmoWeaponComponent::Fire()
 	
 	--CurrentAmmo;
 
+	OnAmmoChange.Broadcast();
+
 	Help::DisplayDebugMessage(TEXT("Ammo left: %d "), CurrentAmmo);
 }
 
@@ -64,5 +68,4 @@ void UAmmoWeaponComponent::AttachWeapon(AFutureGameExerciseCharacter* TargetChar
 			}
 		}
 	}
-	
 }

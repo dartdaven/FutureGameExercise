@@ -62,6 +62,11 @@ void UTP_WeaponComponent::Fire()
 	}
 }
 
+AFutureGameExerciseCharacter* UTP_WeaponComponent::GetCharacter() const
+{
+	return Character;
+}
+
 void UTP_WeaponComponent::AttachWeapon(AFutureGameExerciseCharacter* TargetCharacter)
 {
 	Character = TargetCharacter;

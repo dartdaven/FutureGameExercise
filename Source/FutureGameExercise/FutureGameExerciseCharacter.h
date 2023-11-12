@@ -15,7 +15,6 @@ class UInputMappingContext;
 struct FInputActionValue;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
-//DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnFillAmmo);
 
 UCLASS(config=Game)
 class AFutureGameExerciseCharacter : public ACharacter
@@ -44,9 +43,6 @@ class AFutureGameExerciseCharacter : public ACharacter
 	
 public:
 	AFutureGameExerciseCharacter();
-
-	//UPROPERTY(BlueprintAssignable, Category = "Interaction")
-	//FOnFillAmmo OnFillAmmo;
 
 protected:
 	virtual void BeginPlay();
@@ -81,6 +77,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = Inventory)
 	const int& GetAmmoAmount() const;
 
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnAmmoChange);
+	FOnAmmoChange OnAmmoChange;
+
 protected:
 	/** Called for movement input */
 	void Move(const FInputActionValue& Value);
@@ -88,7 +87,6 @@ protected:
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
 
-protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
 	// End of APawn interface
@@ -103,4 +101,3 @@ private:
 	
 	int mAmmoAmount;
 };
-

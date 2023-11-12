@@ -13,27 +13,28 @@ class FUTUREGAMEEXERCISE_API UAmmoWidget : public UUserWidget
 {
 	GENERATED_BODY()
 	
-	//UFUNCTION()
-	//void RefreshInfo();
-
 public:
-	//UPROPERTY(meta = (BindWidget))
-	//UTextBlock* RiffleAmmo;
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* RiffleAmmo;
 
-	//UPROPERTY(meta = (BindWidget))
-	//UTextBlock* InventoryAmmo;
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* InventoryAmmo;
 
-	//AFutureGameExerciseCharacter* Character;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Customise, meta = (ClampMin = 0, ClampMax = 1))
+	float RedTextPointPercent{ 0.2f };
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Customise, meta = (ClampMin = 0, ClampMax = 1))
+	float YellowTextPointPercent{ 0.5f };
+	
 	UFUNCTION(BlueprintCallable)
 	void SetWeapon(UAmmoWeaponComponent* a_Weapon);
 
 	UFUNCTION(BlueprintCallable)
 	UAmmoWeaponComponent* GetWeapon() const;
 
-//protected:
-//	void NativeOnInitialized() override;
-
 private:
+	UFUNCTION()
+	void Refresh();
+
 	UAmmoWeaponComponent* Weapon;
 };

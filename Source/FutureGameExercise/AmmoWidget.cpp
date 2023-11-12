@@ -1,13 +1,32 @@
 #include "AmmoWidget.h"
 
-//#include "FutureGameExerciseCharacter.h"
 #include "Components/TextBlock.h" 
 
+#include "AmmoWeaponComponent.h"
+#include "FutureGameExerciseCharacter.h"
 #include "HelpingTools.h"
 
 void UAmmoWidget::SetWeapon(UAmmoWeaponComponent* a_Weapon)
 {
 	Weapon = a_Weapon;
+
+	if (Weapon != nullptr)
+	{
+		Weapon->OnAmmoChange.AddDynamic(this, &UAmmoWidget::Refresh);
+
+		if (Weapon->GetCharacter() != nullptr)
+		{
+			Weapon->GetCharacter()->OnAmmoChange.AddDynamic(this, &UAmmoWidget::Refresh);
+
+			Refresh();
+
+			Help::DisplayDebugMessage(TEXT("Ammo Widget is successfully set"));
+
+			return;
+		}
+	}
+
+	Help::DisplayErrorMessage(TEXT("Ammo Widget is not set correctly"));
 }
 
 UAmmoWeaponComponent* UAmmoWidget::GetWeapon() const
@@ -15,22 +34,25 @@ UAmmoWeaponComponent* UAmmoWidget::GetWeapon() const
 	return Weapon;
 }
 
-//void UAmmoWidget::NativeOnInitialized()
-//{
-//	Character = Cast<AFutureGameExerciseCharacter>(GetOwningPlayerPawn());
-//	if (Character)
-//	{
-//		RefreshInfo();
-//		Character->OnFillAmmo.AddDynamic(this, &UAmmoWidget::RefreshInfo);
-//	}
-//}
-//
-//void UAmmoWidget::RefreshInfo()
-//{
-//	Help::DisplayDebugMessage(TEXT("Delegate works"));
-//
-//	if (Character)
-//	{
-//		InventoryAmmo->SetText(FText::AsNumber(Character->GetAmmoAmount()));
-//	}
-//}
+void UAmmoWidget::Refresh()
+{
+	RiffleAmmo->SetText(FText::AsNumber(Weapon->GetCurrentAmmo()));
+	InventoryAmmo->SetText(FText::AsNumber(Weapon->GetCharacter()->GetAmmoAmount()));
+
+	float AmmoPercent = static_cast<float>(Weapon->GetCurrentAmmo()) / Weapon->MaxAmmo;
+
+	if (AmmoPercent < YellowTextPointPercent)
+	{
+		if (AmmoPercent <= RedTextPointPercent)
+		{
+			RiffleAmmo->SetColorAndOpacity(FLinearColor::Red);
+			return;
+		}
+
+		RiffleAmmo->SetColorAndOpacity(FLinearColor::Yellow);
+	}
+	else
+	{
+		RiffleAmmo->SetColorAndOpacity(FLinearColor::White);
+	}
+}

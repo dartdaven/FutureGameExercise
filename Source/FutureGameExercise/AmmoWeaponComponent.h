@@ -27,6 +27,9 @@ public:
 	void Fire() override;
 	void AttachWeapon(AFutureGameExerciseCharacter* TargetCharacter) override;
 
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnAmmoChange);
+	FOnAmmoChange OnAmmoChange;
+
 private:
 
 	int CurrentAmmo;

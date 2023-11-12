@@ -124,9 +124,9 @@ void AFutureGameExerciseCharacter::FillAmmo(const int& value)
 {
 	mAmmoAmount = FMath::Clamp(mAmmoAmount + value, 0, mMaxAmmoAmount);
 
-	//OnFillAmmo.Broadcast();
+	OnAmmoChange.Broadcast();
 
-	Help::DisplayDebugMessage(TEXT("Current Ammo: %d"), mAmmoAmount);
+	//Help::DisplayDebugMessage(TEXT("Current Ammo: %d"), mAmmoAmount);
 }
 
 int AFutureGameExerciseCharacter::TakeOutAmmo(const int& amountRequested)
@@ -142,6 +142,8 @@ int AFutureGameExerciseCharacter::TakeOutAmmo(const int& amountRequested)
 		mAmmoAmount = 0;
 		return toReturn;
 	}
+
+	OnAmmoChange.Broadcast();
 }
 
 const int& AFutureGameExerciseCharacter::GetAmmoAmount() const

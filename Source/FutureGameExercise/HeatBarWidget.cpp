@@ -22,7 +22,6 @@ void UHeatBarWidget::NativeConstruct()
 	if (Weapon != nullptr)
 	{
 		Weapon->OnOverheatEvent.AddDynamic(this, &UHeatBarWidget::SetOverheatedTextVisibility);
-		Help::DisplayDebugMessage(TEXT("Successfully subscribed"));
 	}
 
 	OverheatedText->SetVisibility(ESlateVisibility::Hidden);

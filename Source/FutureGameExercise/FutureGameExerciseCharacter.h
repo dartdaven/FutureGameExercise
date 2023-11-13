@@ -14,6 +14,8 @@ class UInputAction;
 class UInputMappingContext;
 struct FInputActionValue;
 
+class UAmmoCollectibleComponent;
+
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 
 UCLASS(config=Game)
@@ -69,9 +71,6 @@ public:
 	bool GetHasRifle();
 
 	UFUNCTION(BlueprintCallable, Category = Inventory)
-	void FillAmmo(const int& value);
-
-	UFUNCTION(BlueprintCallable, Category = Inventory)
 	int TakeOutAmmo(const int& amountRequested);
 
 	UFUNCTION(BlueprintCallable, Category = Inventory)
@@ -79,6 +78,9 @@ public:
 
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnAmmoChange);
 	FOnAmmoChange OnAmmoChange;
+
+	UFUNCTION(BlueprintCallable, Category = Interaction)
+	void OnAmmoPickUp(UAmmoCollectibleComponent* AmmoComponent);
 
 protected:
 	/** Called for movement input */

@@ -2,34 +2,22 @@
 
 #include "FutureGameExerciseCharacter.h"
 
-UAmmoCollectibleComponent::UAmmoCollectibleComponent()
+int UAmmoCollectibleComponent::TryTakeAmmo(int RequestedAmount)
 {
-	mAmountOfAmmo = 5;
-}
-
-void UAmmoCollectibleComponent::FillAmmo(AFutureGameExerciseCharacter* TargetCharacter)
-{
-	// Check that the character is valid
-	if (TargetCharacter == nullptr)
+	if (RequestedAmount < ContainingAmmo)
 	{
-		return;
-	}
-	
-	int ammoNeeded = TargetCharacter->mMaxAmmoAmount - TargetCharacter->GetAmmoAmount();
-	
-	if (ammoNeeded < mAmountOfAmmo)
-	{
-		TargetCharacter->FillAmmo(ammoNeeded);
-		mAmountOfAmmo -= ammoNeeded;
+		ContainingAmmo -= RequestedAmount;
+		return RequestedAmount;
 	}
 	else
 	{
-		TargetCharacter->FillAmmo(mAmountOfAmmo);
-
+		//It may be a huge problem
 		if (GetOwner() != nullptr)
 		{
 			GetOwner()->Destroy();
 		}
+
+		return ContainingAmmo;
 	}
 }
 

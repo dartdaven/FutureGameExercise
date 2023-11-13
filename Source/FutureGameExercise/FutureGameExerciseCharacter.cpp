@@ -10,6 +10,7 @@
 #include "InputActionValue.h"
 #include "Engine/LocalPlayer.h"
 
+#include "AmmoCollectibleComponent.h"
 #include "HelpingTools.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
@@ -83,6 +84,14 @@ void AFutureGameExerciseCharacter::SetupPlayerInputComponent(UInputComponent* Pl
 	}
 }
 
+void AFutureGameExerciseCharacter::OnAmmoPickUp(UAmmoCollectibleComponent* AmmoComponent)
+{
+	int AmmoNeeded = mMaxAmmoAmount - mAmmoAmount;
+
+	mAmmoAmount += AmmoComponent->TryTakeAmmo(AmmoNeeded);
+
+	OnAmmoChange.Broadcast();
+}
 
 void AFutureGameExerciseCharacter::Move(const FInputActionValue& Value)
 {
@@ -118,15 +127,6 @@ void AFutureGameExerciseCharacter::SetHasRifle(bool bNewHasRifle)
 bool AFutureGameExerciseCharacter::GetHasRifle()
 {
 	return bHasRifle;
-}
-
-void AFutureGameExerciseCharacter::FillAmmo(const int& value)
-{
-	mAmmoAmount = FMath::Clamp(mAmmoAmount + value, 0, mMaxAmmoAmount);
-
-	OnAmmoChange.Broadcast();
-
-	//Help::DisplayDebugMessage(TEXT("Current Ammo: %d"), mAmmoAmount);
 }
 
 int AFutureGameExerciseCharacter::TakeOutAmmo(const int& amountRequested)

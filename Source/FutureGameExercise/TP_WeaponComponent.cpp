@@ -19,10 +19,17 @@ UTP_WeaponComponent::UTP_WeaponComponent()
 
 void UTP_WeaponComponent::Fire()
 {
+	FireImpl();
+}
+
+bool UTP_WeaponComponent::FireImpl()
+{
 	if (Character == nullptr || Character->GetController() == nullptr)
 	{
-		return;
+		return false;
 	}
+
+	bool ProjectileFired{ false }, SFXPlayed{ false }, AnimationPlayed{ false };
 
 	// Try and fire a projectile
 	if (ProjectileClass != nullptr)
@@ -41,6 +48,8 @@ void UTP_WeaponComponent::Fire()
 	
 			// Spawn the projectile at the muzzle
 			World->SpawnActor<AFutureGameExerciseProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
+
+			ProjectileFired = true;
 		}
 	}
 	
@@ -48,6 +57,8 @@ void UTP_WeaponComponent::Fire()
 	if (FireSound != nullptr)
 	{
 		UGameplayStatics::PlaySoundAtLocation(this, FireSound, Character->GetActorLocation());
+
+		SFXPlayed = true;
 	}
 	
 	// Try and play a firing animation if specified
@@ -58,8 +69,12 @@ void UTP_WeaponComponent::Fire()
 		if (AnimInstance != nullptr)
 		{
 			AnimInstance->Montage_Play(FireAnimation, 1.f);
+
+			AnimationPlayed = true;
 		}
 	}
+
+	return ProjectileFired && SFXPlayed && AnimationPlayed;
 }
 
 AFutureGameExerciseCharacter* UTP_WeaponComponent::GetCharacter() const
@@ -69,12 +84,17 @@ AFutureGameExerciseCharacter* UTP_WeaponComponent::GetCharacter() const
 
 void UTP_WeaponComponent::AttachWeapon(AFutureGameExerciseCharacter* TargetCharacter)
 {
+	AttachWeaponImpl(TargetCharacter);
+}
+
+bool UTP_WeaponComponent::AttachWeaponImpl(AFutureGameExerciseCharacter* TargetCharacter)
+{
 	Character = TargetCharacter;
 
 	// Check that the character is valid, and has no rifle yet
 	if (Character == nullptr || Character->GetHasRifle())
 	{
-		return;
+		return false;
 	}
 
 	// Attach the weapon to the First Person Character
@@ -98,8 +118,11 @@ void UTP_WeaponComponent::AttachWeapon(AFutureGameExerciseCharacter* TargetChara
 			// Fire
 			EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Triggered, this, &UTP_WeaponComponent::Fire);
 
+			return true;
 		}
 	}
+
+	return false;
 }
 
 void UTP_WeaponComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)

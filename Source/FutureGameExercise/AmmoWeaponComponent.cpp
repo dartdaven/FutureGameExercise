@@ -43,29 +43,30 @@ void UAmmoWeaponComponent::Fire()
 		return;
 	}
 
-	//It's dangerous
-	UTP_WeaponComponent::Fire();
-	
-	--CurrentAmmo;
+	if (UTP_WeaponComponent::FireImpl())
+	{
+		--CurrentAmmo;
 
-	OnAmmoChange.Broadcast();
+		OnAmmoChange.Broadcast();
 
-	Help::DisplayDebugMessage(TEXT("Ammo left: %d "), CurrentAmmo);
+		Help::DisplayDebugMessage(TEXT("Ammo left: %d "), CurrentAmmo);
+	}
+	else
+	{
+		Help::DisplayErrorMessage(TEXT("Fire method of Weapon Component is broken"));
+	}
 }
 
 void UAmmoWeaponComponent::AttachWeapon(AFutureGameExerciseCharacter* TargetCharacter)
 {
-	//It's also dangerous
-	UTP_WeaponComponent::AttachWeapon(TargetCharacter);
-	
-	if (Character != nullptr || !Character->GetHasRifle())
+	if (UTP_WeaponComponent::AttachWeaponImpl(TargetCharacter))
 	{
-		if (APlayerController* PlayerController = Cast<APlayerController>(Character->GetController()))
-		{
-			if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerController->InputComponent))
-			{
-				EnhancedInputComponent->BindAction(ReloadAction, ETriggerEvent::Triggered, this, &UAmmoWeaponComponent::Reload);
-			}
-		}
+		APlayerController* PlayerController = Cast<APlayerController>(Character->GetController());
+		UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerController->InputComponent);
+		EnhancedInputComponent->BindAction(ReloadAction, ETriggerEvent::Triggered, this, &UAmmoWeaponComponent::Reload);	
+	}
+	else
+	{
+		Help::DisplayErrorMessage(TEXT("Could not attach Weapon Component"));
 	}
 }

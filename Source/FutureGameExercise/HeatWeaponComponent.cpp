@@ -82,25 +82,27 @@ void UHeatWeaponComponent::Fire()
 		return;
 	}
 
-	UTP_WeaponComponent::Fire();
-
-	FScopeLock Lock(&TemperatureMutex);
-
-	Temperature += TemperaturePerShot;
-
-	if (Temperature >= MaxTemperature)
+	if (UTP_WeaponComponent::FireImpl())
 	{
-		Temperature = MaxTemperature;
+		FScopeLock Lock(&TemperatureMutex);
 
-		bIsOverheated = true;
+		Temperature += TemperaturePerShot;
 
-		OnOverheatEvent.Broadcast();
+		if (Temperature >= MaxTemperature)
+		{
+			Temperature = MaxTemperature;
 
-		float TimeToCooldown = MaxTemperature * (1 - CooldownPercentPoint) / CooldownRate;
+			bIsOverheated = true;
 
-		//It may be a potential problem to use the same Timer as between shots, but I don't face it
-		GetWorld()->GetTimerManager().SetTimer(TimerHandle_Cooldown, this, &UHeatWeaponComponent::ClearOverheat, TimeToCooldown, false);
+			OnOverheatEvent.Broadcast();
+
+			float TimeToCooldown = MaxTemperature * (1 - CooldownPercentPoint) / CooldownRate;
+
+			//It may be a potential problem to use the same Timer as between shots, but I don't face it
+			GetWorld()->GetTimerManager().SetTimer(TimerHandle_Cooldown, this, &UHeatWeaponComponent::ClearOverheat, TimeToCooldown, false);
+		}
 	}
+
 }
 
 const float& UHeatWeaponComponent::GetTemperature() const

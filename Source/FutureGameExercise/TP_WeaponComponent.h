@@ -43,9 +43,13 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Weapon")
 	virtual void AttachWeapon(AFutureGameExerciseCharacter* TargetCharacter);
 
+	bool AttachWeaponImpl(AFutureGameExerciseCharacter* TargetCharacter);
+
 	/** Make the weapon Fire a Projectile */
 	UFUNCTION(BlueprintCallable, Category="Weapon")
 	virtual void Fire();
+
+	bool FireImpl();
 
 	AFutureGameExerciseCharacter* GetCharacter() const;
 

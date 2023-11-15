@@ -3,7 +3,9 @@
 #include "GameFramework/PlayerController.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Components/WidgetComponent.h"
 
+#include "AmmoWidget.h"
 #include "FutureGameExerciseCharacter.h"
 #include "HelpingTools.h"
 
@@ -63,10 +65,40 @@ void UAmmoWeaponComponent::AttachWeapon(AFutureGameExerciseCharacter* TargetChar
 	{
 		APlayerController* PlayerController = Cast<APlayerController>(Character->GetController());
 		UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerController->InputComponent);
-		EnhancedInputComponent->BindAction(ReloadAction, ETriggerEvent::Triggered, this, &UAmmoWeaponComponent::Reload);	
+		EnhancedInputComponent->BindAction(ReloadAction, ETriggerEvent::Triggered, this, &UAmmoWeaponComponent::Reload);
+
+		SetupWidget();
 	}
 	else
 	{
 		Help::DisplayErrorMessage(TEXT("Could not attach Weapon Component"));
 	}
+}
+
+void UAmmoWeaponComponent::SetupWidget()
+{
+	AmmoWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("AmmoWidgetComponent"));
+
+	//MagicNumbers Alert
+	AmmoWidgetComponent->SetRelativeLocationAndRotation(FVector(-10.f, 40.f, 20.f), FQuat(FRotator(0.f, 270.f, 0.f)));
+	AmmoWidgetComponent->SetRelativeScale3D(FVector(0.15f, 0.15f, 0.15f));
+
+	AmmoWidgetComponent->SetCastShadow(false);
+
+	FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, true);
+	AmmoWidgetComponent->AttachToComponent(this, FAttachmentTransformRules::KeepRelativeTransform);
+
+	AmmoWidgetComponent->SetWidgetClass(AmmoWidget);
+	
+	UAmmoWidget* AmmoWidgetPtr = Cast<UAmmoWidget>(AmmoWidgetComponent->GetUserWidgetObject());
+
+	if (IsValid(AmmoWidgetPtr))
+	{
+		AmmoWidgetPtr->SetWeapon(this);
+	}
+	else
+	{
+		Help::DisplayErrorMessage(TEXT("Widget class is not set correctly in the Weapon Blueprint"));
+	}
+
 }

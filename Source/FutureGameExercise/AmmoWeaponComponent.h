@@ -4,6 +4,9 @@
 #include "TP_WeaponComponent.h"
 #include "AmmoWeaponComponent.generated.h"
 
+class UWidgetComponent;
+
+
 UCLASS(Blueprintable, BlueprintType, ClassGroup = (Custom), meta = (BlueprintSpawnableComponent) )
 class FUTUREGAMEEXERCISE_API UAmmoWeaponComponent : public UTP_WeaponComponent
 {
@@ -23,14 +26,21 @@ public:
 
 	UAmmoWeaponComponent();
 
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnAmmoChange);
+	FOnAmmoChange OnAmmoChange;
+
+	UPROPERTY(EditDefaultsOnly, Category = Widget)
+	TSubclassOf<class UUserWidget> AmmoWidget;
+
 	//overriden
 	void Fire() override;
 	void AttachWeapon(AFutureGameExerciseCharacter* TargetCharacter) override;
 
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnAmmoChange);
-	FOnAmmoChange OnAmmoChange;
-
 private:
 
+	UWidgetComponent* AmmoWidgetComponent;
+
+	void SetupWidget();
+	
 	int CurrentAmmo;
 };

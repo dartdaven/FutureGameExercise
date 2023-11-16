@@ -13,6 +13,7 @@ UAmmoWeaponComponent::UAmmoWeaponComponent()
 {
 	MaxAmmo = 10;
 	CurrentAmmo = MaxAmmo;
+	AmmoWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("AmmoWidgetComponent"));
 }
 
 void UAmmoWeaponComponent::Reload()
@@ -77,7 +78,6 @@ void UAmmoWeaponComponent::AttachWeapon(AFutureGameExerciseCharacter* TargetChar
 
 void UAmmoWeaponComponent::SetupWidget()
 {
-	AmmoWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("AmmoWidgetComponent"));
 
 	//MagicNumbers Alert
 	AmmoWidgetComponent->SetRelativeLocationAndRotation(FVector(-10.f, 40.f, 20.f), FQuat(FRotator(0.f, 270.f, 0.f)));

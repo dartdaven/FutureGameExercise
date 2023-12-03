@@ -21,7 +21,7 @@ void UHeatBarWidget::NativeConstruct()
 
 	if (Weapon != nullptr)
 	{
-		Weapon->OnOverheatEvent.AddDynamic(this, &UHeatBarWidget::SetOverheatedTextVisibility);
+		Weapon->OverheatStateChanged.AddDynamic(this, &UHeatBarWidget::SetOverheatedTextVisibility);
 	}
 
 	OverheatedText->SetVisibility(ESlateVisibility::Hidden);

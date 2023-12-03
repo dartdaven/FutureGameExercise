@@ -43,7 +43,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool IsOverheated() const;
 
-	FOnOverheatEvent OnOverheatEvent;
+	FOnOverheatEvent OverheatStateChanged;
 
 private:
 	float Temperature {};

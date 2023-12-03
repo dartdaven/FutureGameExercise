@@ -13,7 +13,7 @@ class FUTUREGAMEEXERCISE_API UAmmoWeaponComponent : public UTP_WeaponComponent
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 	class UInputAction* ReloadAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay, meta = (ClampMin = "0", ClampMax = "20"))

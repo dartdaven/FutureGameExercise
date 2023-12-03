@@ -11,11 +11,8 @@ int UAmmoCollectibleComponent::TryTakeAmmo(int RequestedAmount)
 	}
 	else
 	{
-		//It may be a huge problem
-		if (GetOwner() != nullptr)
-		{
-			GetOwner()->Destroy();
-		}
+		// Schedule destruction at the end of the frame
+		GetWorld()->DestroyActor(GetOwner());
 
 		return ContainingAmmo;
 	}

@@ -10,6 +10,8 @@ void UHeatWeaponComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+	FScopeLock Lock(&TemperatureMutex);
+
 	Temperature = FMath::Clamp(Temperature - (DeltaTime * CooldownRate), 0, MaxTemperature);
 }
 
@@ -94,7 +96,7 @@ void UHeatWeaponComponent::Fire()
 
 			bIsOverheated = true;
 
-			OnOverheatEvent.Broadcast();
+			OverheatStateChanged.Broadcast();
 
 			float TimeToCooldown = MaxTemperature * (1 - CooldownPercentPoint) / CooldownRate;
 
@@ -124,5 +126,5 @@ void UHeatWeaponComponent::ClearOverheat()
 {
 	bIsOverheated = false;
 
-	OnOverheatEvent.Broadcast();
+	OverheatStateChanged.Broadcast();
 }

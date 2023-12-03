@@ -15,23 +15,13 @@ void UHeatWeaponComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 	Temperature = FMath::Clamp(Temperature - (DeltaTime * CooldownRate), 0, MaxTemperature);
 }
 
-void UHeatWeaponComponent::AttachWeapon(AFutureGameExerciseCharacter* TargetCharacter)
+bool UHeatWeaponComponent::SetupActionBindings()
 {
-	//---- Start of the Super section ----
-
-	Character = TargetCharacter;
-
-	if (Character == nullptr || Character->GetHasRifle())
+	if (!IsValid(Character))
 	{
-		return;
+		Help::DisplayErrorMessage(TEXT("Unable to setup bindings due to the character is absent"));
+		return false;
 	}
-
-	FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, true);
-	AttachToComponent(Character->GetMesh1P(), AttachmentRules, FName(TEXT("GripPoint")));
-
-	Character->SetHasRifle(true);
-
-	//---- End of the Super section ----
 
 	if (APlayerController* PlayerController = Cast<APlayerController>(Character->GetController()))
 	{
@@ -46,8 +36,12 @@ void UHeatWeaponComponent::AttachWeapon(AFutureGameExerciseCharacter* TargetChar
 			// Fire
 			EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Started, this, &UHeatWeaponComponent::StartFire);
 			EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Completed, this, &UHeatWeaponComponent::StopFire);
+
+			return true;
 		}
 	}
+
+	return false;
 }
 
 void UHeatWeaponComponent::StartFire()

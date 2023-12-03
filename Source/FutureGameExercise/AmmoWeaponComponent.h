@@ -34,7 +34,7 @@ public:
 
 	//overriden
 	void Fire() override;
-	void AttachWeapon(AFutureGameExerciseCharacter* TargetCharacter) override;
+	bool SetupActionBindings() override;
 
 private:
 

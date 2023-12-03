@@ -17,6 +17,35 @@ UTP_WeaponComponent::UTP_WeaponComponent()
 	MuzzleOffset = FVector(100.0f, 0.0f, 10.0f);
 }
 
+bool UTP_WeaponComponent::SetupActionBindings()
+{
+	if (!IsValid(Character))
+	{
+		Help::DisplayErrorMessage(TEXT("Unable to setup bindings due to the character is absent"));
+		return false;
+	}
+
+	// Set up action bindings
+	if (APlayerController* PlayerController = Cast<APlayerController>(Character->GetController()))
+	{
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+		{
+			// Set the priority of the mapping to 1, so that it overrides the Jump action with the Fire action when using touch input
+			Subsystem->AddMappingContext(FireMappingContext, 1);
+		}
+
+		if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerController->InputComponent))
+		{
+			// Fire
+			EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Triggered, this, &UTP_WeaponComponent::Fire);
+
+			return true;
+		}
+	}
+
+	return false;
+}	
+
 void UTP_WeaponComponent::Fire()
 {
 	FireImpl();
@@ -83,47 +112,15 @@ AFutureGameExerciseCharacter* UTP_WeaponComponent::GetCharacter() const
 	return Character;
 }
 
-void UTP_WeaponComponent::AttachWeapon(AFutureGameExerciseCharacter* TargetCharacter)
+void UTP_WeaponComponent::SetCharacter(AFutureGameExerciseCharacter* a_Character)
 {
-	AttachWeaponImpl(TargetCharacter);
-}
-
-bool UTP_WeaponComponent::AttachWeaponImpl(AFutureGameExerciseCharacter* TargetCharacter)
-{
-	Character = TargetCharacter;
-
-	// Check that the character is valid, and has no rifle yet
-	if (Character == nullptr || Character->GetHasRifle())
+	if (!IsValid(a_Character))
 	{
-		return false;
+		Help::DisplayErrorMessage(TEXT("Wrong pointer was passed to a weapon as a character"));
+		return;
 	}
 
-	// Attach the weapon to the First Person Character
-	FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, true);
-	AttachToComponent(Character->GetMesh1P(), AttachmentRules, FName(TEXT("GripPoint")));
-	
-	// switch bHasRifle so the animation blueprint can switch to another animation set
-	Character->SetHasRifle(true);
-
-	// Set up action bindings
-	if (APlayerController* PlayerController = Cast<APlayerController>(Character->GetController()))
-	{
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
-		{
-			// Set the priority of the mapping to 1, so that it overrides the Jump action with the Fire action when using touch input
-			Subsystem->AddMappingContext(FireMappingContext, 1);
-		}
-
-		if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerController->InputComponent))
-		{
-			// Fire
-			EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Triggered, this, &UTP_WeaponComponent::Fire);
-
-			return true;
-		}
-	}
-
-	return false;
+	Character = a_Character;
 }
 
 void UTP_WeaponComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)

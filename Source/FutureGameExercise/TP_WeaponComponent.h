@@ -39,11 +39,7 @@ public:
 	/** Sets default values for this component's properties */
 	UTP_WeaponComponent();
 
-	/** Attaches the actor to a FirstPersonCharacter */
-	UFUNCTION(BlueprintCallable, Category="Weapon")
-	virtual void AttachWeapon(AFutureGameExerciseCharacter* TargetCharacter);
-
-	bool AttachWeaponImpl(AFutureGameExerciseCharacter* TargetCharacter);
+	virtual bool SetupActionBindings();
 
 	/** Make the weapon Fire a Projectile */
 	UFUNCTION(BlueprintCallable, Category="Weapon")
@@ -52,6 +48,8 @@ public:
 	bool FireImpl();
 
 	AFutureGameExerciseCharacter* GetCharacter() const;
+
+	void SetCharacter(AFutureGameExerciseCharacter* a_Character);
 
 protected:
 	/** Ends gameplay for this component. */

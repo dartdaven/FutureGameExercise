@@ -11,6 +11,7 @@
 #include "Engine/LocalPlayer.h"
 
 #include "AmmoCollectibleComponent.h"
+#include "TP_WeaponComponent.h"
 #include "HelpingTools.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
@@ -77,11 +78,19 @@ void AFutureGameExerciseCharacter::SetupPlayerInputComponent(UInputComponent* Pl
 
 		// Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AFutureGameExerciseCharacter::Look);
+
+		//Debug
+		EnhancedInputComponent->BindAction(SwitchWeaponAction, ETriggerEvent::Triggered, this, &AFutureGameExerciseCharacter::SwitchWeapon);
 	}
 	else
 	{
 		UE_LOG(LogTemplateCharacter, Error, TEXT("'%s' Failed to find an Enhanced Input Component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."), *GetNameSafe(this));
 	}
+}
+
+void AFutureGameExerciseCharacter::SwitchWeapon()
+{
+	if (Weapons.Num() <= 1) return;
 }
 
 void AFutureGameExerciseCharacter::OnAmmoPickUp(UAmmoCollectibleComponent* AmmoComponent)
@@ -91,6 +100,36 @@ void AFutureGameExerciseCharacter::OnAmmoPickUp(UAmmoCollectibleComponent* AmmoC
 	mAmmoAmount += AmmoComponent->TryTakeAmmo(AmmoNeeded);
 
 	OnAmmoChange.Broadcast();
+}
+
+void AFutureGameExerciseCharacter::OnWeaponPickUp(UTP_WeaponComponent* WeaponComponent)
+{
+	if (!IsValid(WeaponComponent))
+	{
+		Help::DisplayErrorMessage(TEXT("Wrong pointer was passed to a character as a weapon"));
+		return;
+	}
+
+	if (!Weapons.Contains(WeaponComponent))
+	{
+		Weapons.Add(WeaponComponent);
+
+		FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, true);
+		WeaponComponent->AttachToComponent(Mesh1P, AttachmentRules, FName(TEXT("GripPoint")));
+
+		WeaponComponent->SetCharacter(this);
+
+		if (!bHasRifle) 
+		{
+			bHasRifle = true;
+			WeaponComponent->SetupActionBindings();
+		}
+		else
+		{
+			WeaponComponent->SetVisibility(false, true);
+		}
+
+	}
 }
 
 void AFutureGameExerciseCharacter::Move(const FInputActionValue& Value)

@@ -60,19 +60,23 @@ void UAmmoWeaponComponent::Fire()
 	}
 }
 
-void UAmmoWeaponComponent::AttachWeapon(AFutureGameExerciseCharacter* TargetCharacter)
+bool UAmmoWeaponComponent::SetupActionBindings()
 {
-	if (UTP_WeaponComponent::AttachWeaponImpl(TargetCharacter))
+	if (UTP_WeaponComponent::SetupActionBindings())
 	{
 		APlayerController* PlayerController = Cast<APlayerController>(Character->GetController());
 		UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerController->InputComponent);
 		EnhancedInputComponent->BindAction(ReloadAction, ETriggerEvent::Triggered, this, &UAmmoWeaponComponent::Reload);
 
+		//TODO get it outta here
 		SetupWidget();
+
+		return true;
 	}
 	else
 	{
-		Help::DisplayErrorMessage(TEXT("Could not attach Weapon Component"));
+		Help::DisplayErrorMessage(TEXT("Something's wrong with bindings"));
+		return false;
 	}
 }
 

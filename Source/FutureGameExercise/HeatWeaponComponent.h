@@ -28,7 +28,7 @@ public:
 
 	void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-	void AttachWeapon(AFutureGameExerciseCharacter* TargetCharacter) override;
+	bool SetupActionBindings() override;
 	
 	void StartFire();
 	void StopFire();

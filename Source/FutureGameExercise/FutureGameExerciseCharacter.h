@@ -15,6 +15,7 @@ class UInputMappingContext;
 struct FInputActionValue;
 
 class UAmmoCollectibleComponent;
+class UTP_WeaponComponent;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 
@@ -82,6 +83,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = Interaction)
 	void OnAmmoPickUp(UAmmoCollectibleComponent* AmmoComponent);
 
+	UFUNCTION(BlueprintCallable, Category = Interaction)
+	void OnWeaponPickUp(UTP_WeaponComponent* WeaponComponent);
+
 protected:
 	/** Called for movement input */
 	void Move(const FInputActionValue& Value);
@@ -93,6 +97,8 @@ protected:
 	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
 	// End of APawn interface
 
+	void SwitchWeapon();
+
 public:
 	/** Returns Mesh1P subobject **/
 	USkeletalMeshComponent* GetMesh1P() const { return Mesh1P; }
@@ -100,6 +106,12 @@ public:
 	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
 
 private:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* SwitchWeaponAction;
+
+	UTP_WeaponComponent* ActiveWeapon = nullptr;
+
+	TArray<UTP_WeaponComponent*> Weapons;
 	
 	int mAmmoAmount;
 };

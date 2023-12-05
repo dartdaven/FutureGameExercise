@@ -30,7 +30,7 @@ public:
 
 	/** MappingContext */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
-	class UInputMappingContext* FireMappingContext;
+	class UInputMappingContext* WeaponMappingContext;
 
 	/** Fire Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
@@ -50,6 +50,8 @@ public:
 	AFutureGameExerciseCharacter* GetCharacter() const;
 
 	void SetCharacter(AFutureGameExerciseCharacter* a_Character);
+
+	const UInputMappingContext* GetMappingContext() const;
 
 protected:
 	/** Ends gameplay for this component. */

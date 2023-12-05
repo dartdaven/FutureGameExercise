@@ -46,22 +46,6 @@ AFutureGameExerciseCharacter::AFutureGameExerciseCharacter()
 	mAmmoAmount = 0;
 }
 
-void AFutureGameExerciseCharacter::BeginPlay()
-{
-	// Call the base class  
-	Super::BeginPlay();
-
-	// Add Input Mapping Context
-	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
-	{
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
-		{
-			Subsystem->AddMappingContext(DefaultMappingContext, 0);
-		}
-	}
-
-}
-
 //////////////////////////////////////////////////////////////////////////// Input
 
 void AFutureGameExerciseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -91,6 +75,66 @@ void AFutureGameExerciseCharacter::SetupPlayerInputComponent(UInputComponent* Pl
 void AFutureGameExerciseCharacter::SwitchWeapon()
 {
 	if (Weapons.Num() <= 1) return;
+
+	int IndexOfActiveWeapon = Weapons.IndexOfByKey(ActiveWeapon);
+	int IndexOfNewWeapon;
+
+	if (IndexOfActiveWeapon != INDEX_NONE)
+	{
+		IndexOfNewWeapon = (IndexOfActiveWeapon == Weapons.Num() - 1) ? 0 : IndexOfActiveWeapon + 1;
+	}
+	else
+	{
+		Help::DisplayErrorMessage(TEXT("Weapon not found in the array"));
+		return;
+	}
+
+	Help::DisplayDebugMessage(TEXT("Index of active weapon: %d"), IndexOfActiveWeapon);
+	Help::DisplayDebugMessage(TEXT("Index of new weapon: %d"), IndexOfNewWeapon);
+
+	bHasRifle = false; //for animation purposes
+	DeactivateWeapon(ActiveWeapon);
+
+	FTimerDelegate TimerCallback;
+	TimerCallback.BindLambda([this, IndexOfNewWeapon]() {ActivateWeapon(Weapons[IndexOfNewWeapon]); });
+
+	FTimerHandle TimerHandle;
+
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle, TimerCallback, .5f, false);
+}
+
+void AFutureGameExerciseCharacter::ActivateWeapon(UTP_WeaponComponent* WeaponToActivate)
+{
+	//TODO Check
+
+	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
+	{
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+		{
+			Subsystem->AddMappingContext(WeaponToActivate->GetMappingContext(), 1);
+		}
+	}
+
+	WeaponToActivate->SetVisibility(true, true);
+
+	ActiveWeapon = WeaponToActivate;
+
+	bHasRifle = true; //For Debug. TODO remove
+}
+
+void AFutureGameExerciseCharacter::DeactivateWeapon(UTP_WeaponComponent* WeaponToDeactivate)
+{
+	//TODO Check
+
+	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
+	{
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+		{
+			Subsystem->RemoveMappingContext(WeaponToDeactivate->GetMappingContext());
+		}
+	}
+
+	WeaponToDeactivate->SetVisibility(false, true);
 }
 
 void AFutureGameExerciseCharacter::OnAmmoPickUp(UAmmoCollectibleComponent* AmmoComponent)
@@ -110,6 +154,7 @@ void AFutureGameExerciseCharacter::OnWeaponPickUp(UTP_WeaponComponent* WeaponCom
 		return;
 	}
 
+	//TODO This is not valid check because every object is unique, and I want to check if I have the same TYPE of the object
 	if (!Weapons.Contains(WeaponComponent))
 	{
 		Weapons.Add(WeaponComponent);
@@ -118,17 +163,17 @@ void AFutureGameExerciseCharacter::OnWeaponPickUp(UTP_WeaponComponent* WeaponCom
 		WeaponComponent->AttachToComponent(Mesh1P, AttachmentRules, FName(TEXT("GripPoint")));
 
 		WeaponComponent->SetCharacter(this);
+		WeaponComponent->SetupActionBindings();
 
 		if (!bHasRifle) 
 		{
 			bHasRifle = true;
-			WeaponComponent->SetupActionBindings();
+			ActivateWeapon(WeaponComponent);
 		}
 		else
 		{
-			WeaponComponent->SetVisibility(false, true);
+			DeactivateWeapon(WeaponComponent);
 		}
-
 	}
 }
 

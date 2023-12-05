@@ -32,10 +32,6 @@ class AFutureGameExerciseCharacter : public ACharacter
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* FirstPersonCameraComponent;
 
-	/** MappingContext */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
-	UInputMappingContext* DefaultMappingContext;
-
 	/** Jump Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	UInputAction* JumpAction;
@@ -46,11 +42,6 @@ class AFutureGameExerciseCharacter : public ACharacter
 	
 public:
 	AFutureGameExerciseCharacter();
-
-protected:
-	virtual void BeginPlay();
-
-public:
 		
 	/** Look Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
@@ -98,6 +89,10 @@ protected:
 	// End of APawn interface
 
 	void SwitchWeapon();
+
+	void ActivateWeapon(UTP_WeaponComponent* WeaponToActivate);
+
+	void DeactivateWeapon(UTP_WeaponComponent* WeaponToDeactivate);
 
 public:
 	/** Returns Mesh1P subobject **/

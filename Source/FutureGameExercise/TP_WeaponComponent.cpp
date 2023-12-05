@@ -28,12 +28,6 @@ bool UTP_WeaponComponent::SetupActionBindings()
 	// Set up action bindings
 	if (APlayerController* PlayerController = Cast<APlayerController>(Character->GetController()))
 	{
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
-		{
-			// Set the priority of the mapping to 1, so that it overrides the Jump action with the Fire action when using touch input
-			Subsystem->AddMappingContext(FireMappingContext, 1);
-		}
-
 		if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerController->InputComponent))
 		{
 			// Fire
@@ -123,6 +117,11 @@ void UTP_WeaponComponent::SetCharacter(AFutureGameExerciseCharacter* a_Character
 	Character = a_Character;
 }
 
+const UInputMappingContext* UTP_WeaponComponent::GetMappingContext() const
+{
+	return WeaponMappingContext;
+}
+
 void UTP_WeaponComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	if (Character == nullptr)
@@ -134,7 +133,7 @@ void UTP_WeaponComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	{
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 		{
-			Subsystem->RemoveMappingContext(FireMappingContext);
+			Subsystem->RemoveMappingContext(WeaponMappingContext);
 		}
 	}
 }

@@ -13,6 +13,7 @@ UAmmoWeaponComponent::UAmmoWeaponComponent()
 {
 	MaxAmmo = 10;
 	CurrentAmmo = MaxAmmo;
+
 	AmmoWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("AmmoWidgetComponent"));
 }
 
@@ -82,7 +83,6 @@ bool UAmmoWeaponComponent::SetupActionBindings()
 
 void UAmmoWeaponComponent::SetupWidget()
 {
-
 	//MagicNumbers Alert
 	AmmoWidgetComponent->SetRelativeLocationAndRotation(FVector(-10.f, 40.f, 20.f), FQuat(FRotator(0.f, 270.f, 0.f)));
 	AmmoWidgetComponent->SetRelativeScale3D(FVector(0.15f, 0.15f, 0.15f));

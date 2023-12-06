@@ -3,7 +3,9 @@
 #include "FutureGameExerciseCharacter.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Components/WidgetComponent.h"
 
+#include "HeatBarWidget.h"
 #include "HelpingTools.h"
 
 void UHeatWeaponComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -22,6 +24,8 @@ bool UHeatWeaponComponent::SetupActionBindings()
 		Help::DisplayErrorMessage(TEXT("Unable to setup bindings due to the character is absent"));
 		return false;
 	}
+
+	SetupWidget(); //TODO Get it out of here
 
 	if (APlayerController* PlayerController = Cast<APlayerController>(Character->GetController()))
 	{
@@ -116,9 +120,39 @@ bool UHeatWeaponComponent::IsOverheated() const
 	return bIsOverheated;
 }
 
+UHeatWeaponComponent::UHeatWeaponComponent()
+{
+	HeatWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("HeatWidgetComponent"));
+}
+
 void UHeatWeaponComponent::ClearOverheat()
 {
 	bIsOverheated = false;
 
 	OverheatStateChanged.Broadcast();
+}
+
+void UHeatWeaponComponent::SetupWidget()
+{
+	//MagicNumbers Alert
+	HeatWidgetComponent->SetRelativeLocationAndRotation(FVector(-15.f, 45.f, 20.f), FQuat(FRotator(0.f, 270.f, 0.f)));
+	HeatWidgetComponent->SetRelativeScale3D(FVector(0.15f, 0.15f, 0.15f));
+
+	HeatWidgetComponent->SetCastShadow(false);
+
+	FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, true);
+	HeatWidgetComponent->AttachToComponent(this, FAttachmentTransformRules::KeepRelativeTransform);
+
+	HeatWidgetComponent->SetWidgetClass(HeatWidget);
+
+	UHeatBarWidget* HeatBarWidgetPtr = Cast<UHeatBarWidget>(HeatWidgetComponent->GetUserWidgetObject());
+
+	if (IsValid(HeatBarWidgetPtr))
+	{
+		HeatBarWidgetPtr->SetWeapon(this);
+	}
+	else
+	{
+		Help::DisplayErrorMessage(TEXT("Widget class is not set correctly in the Weapon Blueprint"));
+	}
 }

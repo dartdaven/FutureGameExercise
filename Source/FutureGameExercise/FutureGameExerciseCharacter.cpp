@@ -119,7 +119,7 @@ void AFutureGameExerciseCharacter::ActivateWeapon(UTP_WeaponComponent* WeaponToA
 
 	ActiveWeapon = WeaponToActivate;
 
-	bHasRifle = true; //For Debug. TODO remove
+	bHasRifle = true;
 }
 
 void AFutureGameExerciseCharacter::DeactivateWeapon(UTP_WeaponComponent* WeaponToDeactivate)

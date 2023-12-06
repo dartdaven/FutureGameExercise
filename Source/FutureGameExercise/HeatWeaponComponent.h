@@ -45,6 +45,11 @@ public:
 
 	FOnOverheatEvent OverheatStateChanged;
 
+	UHeatWeaponComponent();
+
+	UPROPERTY(EditDefaultsOnly, Category = Widget)
+	TSubclassOf<class UUserWidget> HeatWidget;
+
 private:
 	float Temperature {};
 	float MaxTemperature { 100.f };
@@ -56,4 +61,8 @@ private:
 	FTimerHandle TimerHandle_Cooldown;
 
 	FCriticalSection TemperatureMutex;
+
+	class UWidgetComponent* HeatWidgetComponent;
+
+	void SetupWidget();
 };

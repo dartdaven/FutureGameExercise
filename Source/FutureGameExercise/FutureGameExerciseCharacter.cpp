@@ -89,18 +89,15 @@ void AFutureGameExerciseCharacter::SwitchWeapon()
 		return;
 	}
 
-	Help::DisplayDebugMessage(TEXT("Index of active weapon: %d"), IndexOfActiveWeapon);
-	Help::DisplayDebugMessage(TEXT("Index of new weapon: %d"), IndexOfNewWeapon);
-
 	bHasRifle = false; //for animation purposes
+
 	DeactivateWeapon(ActiveWeapon);
 
-	FTimerDelegate TimerCallback;
-	TimerCallback.BindLambda([this, IndexOfNewWeapon]() {ActivateWeapon(Weapons[IndexOfNewWeapon]); });
+	auto CallbackWithArguments = [this, IndexOfNewWeapon]() { ActivateWeapon(Weapons[IndexOfNewWeapon]); };
 
 	FTimerHandle TimerHandle;
 
-	GetWorld()->GetTimerManager().SetTimer(TimerHandle, TimerCallback, .5f, false);
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle, CallbackWithArguments, .5f, false);
 }
 
 void AFutureGameExerciseCharacter::ActivateWeapon(UTP_WeaponComponent* WeaponToActivate)

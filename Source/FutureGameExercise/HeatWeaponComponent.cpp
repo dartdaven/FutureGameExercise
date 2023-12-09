@@ -50,28 +50,47 @@ bool UHeatWeaponComponent::SetupActionBindings()
 
 void UHeatWeaponComponent::StartFire()
 {
-	//Check to not to overcome FireInterval
-	if (GetWorld()->GetTimerManager().IsTimerActive(TimerHandle_Cooldown))
+	FTimerManager& TimerManager = GetWorld()->GetTimerManager();	
+	float CooldownTime = GetWorld()->GetTimerManager().GetTimerRemaining(TimerHandle_Cooldown);
+	
+	if (bIsOverheated)
+	{
+		//it's interesting what I can write instead of auto and not an std::function
+		auto OverheatCallback = [this]()
+		{
+			ClearOverheat();
+			StartFire();
+		};
+
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle_Cooldown, OverheatCallback, CooldownTime, false);
+
+		return;
+	}
+	else if	(TimerManager.GetTimerRemaining(TimerHandle_Cooldown) >= SMALL_NUMBER) //float problem
 	{	
-		float CooldownTime = GetWorld()->GetTimerManager().GetTimerRemaining(TimerHandle_Cooldown);
-		GetWorld()->GetTimerManager().SetTimer(TimerHandle_HandleRefire, this, &UHeatWeaponComponent::StartFire, CooldownTime, false);
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle_Cooldown, this, &UHeatWeaponComponent::StartFire, CooldownTime, false);
 		
 		return;
 	}
 
 	Fire();
 
-	GetWorld()->GetTimerManager().SetTimer(TimerHandle_HandleRefire, this, &UHeatWeaponComponent::Fire, FireInterval, true);
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle_Cooldown, this, &UHeatWeaponComponent::Fire, FireInterval, true);
 }
 
 void UHeatWeaponComponent::StopFire()
 {
-	float TimeRemaining = GetWorld()->GetTimerManager().GetTimerRemaining(TimerHandle_HandleRefire);
-	GetWorld()->GetTimerManager().ClearTimer(TimerHandle_HandleRefire);
+	float TimeRemaining = GetWorld()->GetTimerManager().GetTimerRemaining(TimerHandle_Cooldown);
 	
-	if (!IsOverheated())
+	if (!bIsOverheated)
 	{
+		GetWorld()->GetTimerManager().ClearTimer(TimerHandle_Cooldown);
+		
 		GetWorld()->GetTimerManager().SetTimer(TimerHandle_Cooldown, TimeRemaining, false);
+	}
+	else
+	{
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle_Cooldown, this, &UHeatWeaponComponent::ClearOverheat, TimeRemaining, false);
 	}
 }
 
@@ -79,6 +98,8 @@ void UHeatWeaponComponent::Fire()
 {
 	if (IsOverheated())
 	{
+		//TODO sound unable to fire
+
 		return;
 	}
 
@@ -98,7 +119,6 @@ void UHeatWeaponComponent::Fire()
 
 			float TimeToCooldown = MaxTemperature * (1 - CooldownPercentPoint) / CooldownRate;
 
-			//It may be a potential problem to use the same Timer as between shots, but I don't face it
 			GetWorld()->GetTimerManager().SetTimer(TimerHandle_Cooldown, this, &UHeatWeaponComponent::ClearOverheat, TimeToCooldown, false);
 		}
 	}

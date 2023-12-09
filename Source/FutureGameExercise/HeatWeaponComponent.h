@@ -57,7 +57,6 @@ private:
 
 	void ClearOverheat();
 
-	FTimerHandle TimerHandle_HandleRefire;
 	FTimerHandle TimerHandle_Cooldown;
 
 	FCriticalSection TemperatureMutex;

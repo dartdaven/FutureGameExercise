@@ -24,37 +24,42 @@ class AFutureGameExerciseCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
-	/** Pawn mesh: 1st person view (arms; seen only by self) */
-	UPROPERTY(VisibleDefaultsOnly, Category=Mesh)
-	USkeletalMeshComponent* Mesh1P;
-
-	/** First person camera */
+	/* First person camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* FirstPersonCameraComponent;
 
-	/** Jump Input Action */
+	/* Jump Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	UInputAction* JumpAction;
 
-	/** Move Input Action */
+	/* Move Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	UInputAction* MoveAction;
+
+	UPROPERTY(EditDefaultsOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* ThrowGrenadeAction;
+
+	UPROPERTY(EditDefaultsOnly, Category = Grenade)
+	TSubclassOf<class AGrenade> GrenadeClass;
 	
 public:
 	AFutureGameExerciseCharacter();
 		
-	/** Look Input Action */
+	/* Look Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* LookAction;
 
-	/** Bool for AnimBP to switch to another animation set */
+	/* Bool for AnimBP to switch to another animation set */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Weapon)
 	bool bHasRifle;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Inventory)
-	int mMaxAmmoAmount;
+	/* Returns FirstPersonCameraComponent subobject **/
+	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
 
-	/** Setter to set the bool */
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Inventory)
+	int MaxAmmoAmount;
+
+	/* Setter to set the bool */
 	UFUNCTION(BlueprintCallable, Category = Weapon)
 	void SetHasRifle(bool bNewHasRifle);
 
@@ -78,15 +83,14 @@ public:
 	void OnWeaponPickUp(UTP_WeaponComponent* WeaponComponent);
 
 protected:
-	/** Called for movement input */
+	/* Called for movement input */
 	void Move(const FInputActionValue& Value);
 
-	/** Called for looking input */
+	/* Called for looking input */
 	void Look(const FInputActionValue& Value);
 
-	// APawn interface
+	/* APawn interface */
 	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
-	// End of APawn interface
 
 	void SwitchWeapon();
 
@@ -94,19 +98,19 @@ protected:
 
 	void DeactivateWeapon(UTP_WeaponComponent* WeaponToDeactivate);
 
-public:
-	/** Returns Mesh1P subobject **/
-	USkeletalMeshComponent* GetMesh1P() const { return Mesh1P; }
-	/** Returns FirstPersonCameraComponent subobject **/
-	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
+	void ThrowGrenade();
+
 
 private:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditDefaultsOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* SwitchWeaponAction;
 
 	UTP_WeaponComponent* ActiveWeapon = nullptr;
 
 	TArray<UTP_WeaponComponent*> Weapons;
 	
-	int mAmmoAmount;
+	int AmmoAmount;
+
+	UPROPERTY(EditDefaultsOnly, Category = Grenade, meta = (AllowPrivateAccess = "true"))
+	USceneComponent* GrenadeSpawnPoint;
 };

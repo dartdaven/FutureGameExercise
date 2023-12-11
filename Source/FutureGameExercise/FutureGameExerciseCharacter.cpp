@@ -13,6 +13,7 @@
 #include "AmmoCollectibleComponent.h"
 #include "TP_WeaponComponent.h"
 #include "HelpingTools.h"
+#include "Grenade.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -33,17 +34,20 @@ AFutureGameExerciseCharacter::AFutureGameExerciseCharacter()
 	FirstPersonCameraComponent->SetRelativeLocation(FVector(-10.f, 0.f, 60.f)); // Position the camera
 	FirstPersonCameraComponent->bUsePawnControlRotation = true;
 
-	// Create a mesh component that will be used when being viewed from a '1st person' view (when controlling this pawn)
-	Mesh1P = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("CharacterMesh1P"));
-	Mesh1P->SetOnlyOwnerSee(true);
-	Mesh1P->SetupAttachment(FirstPersonCameraComponent);
-	Mesh1P->bCastDynamicShadow = false;
-	Mesh1P->CastShadow = false;
-	//Mesh1P->SetRelativeRotation(FRotator(0.9f, -19.19f, 5.2f));
-	Mesh1P->SetRelativeLocation(FVector(-30.f, 0.f, -150.f));
+	GrenadeSpawnPoint = CreateDefaultSubobject<USceneComponent>(TEXT("GrenadeSpawnPoint"));
+	GrenadeSpawnPoint->SetupAttachment(FirstPersonCameraComponent);
+	GrenadeSpawnPoint->SetRelativeLocation(FVector(50.f, 0.f, 0.f));
 
-	mMaxAmmoAmount = 30;
-	mAmmoAmount = 0;
+	USkeletalMeshComponent* MainMesh = GetMesh();
+	MainMesh->SetOnlyOwnerSee(true);
+	MainMesh->SetupAttachment(FirstPersonCameraComponent);
+	MainMesh->bCastDynamicShadow = false;
+	MainMesh->CastShadow = false;
+	MainMesh->SetRelativeLocation(FVector(-30.f, 0.f, -150.f));
+	MainMesh->SetRelativeRotation(FirstPersonCameraComponent->GetRelativeRotation());
+
+	MaxAmmoAmount = 30;
+	AmmoAmount = 0;
 }
 
 //////////////////////////////////////////////////////////////////////////// Input
@@ -63,8 +67,10 @@ void AFutureGameExerciseCharacter::SetupPlayerInputComponent(UInputComponent* Pl
 		// Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AFutureGameExerciseCharacter::Look);
 
-		//Debug
+		//Switch Weapon
 		EnhancedInputComponent->BindAction(SwitchWeaponAction, ETriggerEvent::Triggered, this, &AFutureGameExerciseCharacter::SwitchWeapon);
+
+		EnhancedInputComponent->BindAction(ThrowGrenadeAction, ETriggerEvent::Triggered, this, &AFutureGameExerciseCharacter::ThrowGrenade);
 	}
 	else
 	{
@@ -134,11 +140,26 @@ void AFutureGameExerciseCharacter::DeactivateWeapon(UTP_WeaponComponent* WeaponT
 	WeaponToDeactivate->SetVisibility(false, true);
 }
 
+void AFutureGameExerciseCharacter::ThrowGrenade()
+{
+	if (GrenadeClass != nullptr || GetController() != nullptr)
+	{
+
+		FActorSpawnParameters ActorSpawnParams;
+		ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
+
+		FVector Location = GrenadeSpawnPoint->GetComponentLocation();
+		FRotator Rotation = GrenadeSpawnPoint->GetComponentRotation();
+
+		GetWorld()->SpawnActor<AGrenade>(GrenadeClass, Location, Rotation, ActorSpawnParams);
+	}
+}
+
 void AFutureGameExerciseCharacter::OnAmmoPickUp(UAmmoCollectibleComponent* AmmoComponent)
 {
-	int AmmoNeeded = mMaxAmmoAmount - mAmmoAmount;
+	int AmmoNeeded = MaxAmmoAmount - AmmoAmount;
 
-	mAmmoAmount += AmmoComponent->TryTakeAmmo(AmmoNeeded);
+	AmmoAmount += AmmoComponent->TryTakeAmmo(AmmoNeeded);
 
 	OnAmmoChange.Broadcast();
 }
@@ -157,7 +178,7 @@ void AFutureGameExerciseCharacter::OnWeaponPickUp(UTP_WeaponComponent* WeaponCom
 		Weapons.Add(WeaponComponent);
 
 		FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, true);
-		WeaponComponent->AttachToComponent(Mesh1P, AttachmentRules, FName(TEXT("GripPoint")));
+		WeaponComponent->AttachToComponent(GetMesh(), AttachmentRules, FName(TEXT("GripPoint")));
 
 		WeaponComponent->SetCharacter(this);
 		WeaponComponent->SetupActionBindings();
@@ -212,15 +233,15 @@ bool AFutureGameExerciseCharacter::GetHasRifle()
 
 int AFutureGameExerciseCharacter::TakeOutAmmo(const int& amountRequested)
 {
-	if (mAmmoAmount >= amountRequested)
+	if (AmmoAmount >= amountRequested)
 	{
-		mAmmoAmount -= amountRequested;
+		AmmoAmount -= amountRequested;
 		return amountRequested;
 	}
 	else
 	{
-		int toReturn = mAmmoAmount;
-		mAmmoAmount = 0;
+		int toReturn = AmmoAmount;
+		AmmoAmount = 0;
 		return toReturn;
 	}
 
@@ -229,5 +250,5 @@ int AFutureGameExerciseCharacter::TakeOutAmmo(const int& amountRequested)
 
 const int& AFutureGameExerciseCharacter::GetAmmoAmount() const
 {
-	return mAmmoAmount;
+	return AmmoAmount;
 }

@@ -56,9 +56,6 @@ public:
 	/* Returns FirstPersonCameraComponent subobject **/
 	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Inventory)
-	int MaxAmmoAmount;
-
 	/* Setter to set the bool */
 	UFUNCTION(BlueprintCallable, Category = Weapon)
 	void SetHasRifle(bool bNewHasRifle);
@@ -108,6 +105,9 @@ private:
 	UTP_WeaponComponent* ActiveWeapon = nullptr;
 
 	TArray<UTP_WeaponComponent*> Weapons;
+
+	UPROPERTY(EditDefaultsOnly, Category = Inventory, meta = (AllowPrivateAccess = "true", ClampMin = "1", ClampMax = "100"))
+	int MaxAmmoAmount;
 	
 	int AmmoAmount;
 

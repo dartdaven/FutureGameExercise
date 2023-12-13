@@ -13,20 +13,25 @@ AGrenade::AGrenade()
 
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	Mesh->SetSimulatePhysics(true);
+	Mesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore); //Ignore player collision,  
 
-	// Use a ProjectileMovementComponent to govern this projectile's movement
 	ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovement"));
+	
+	//Default parameters. Can be adjusted in blueprint
 	ProjectileMovement->InitialSpeed = 1000.f;
 	ProjectileMovement->MaxSpeed = 1000.f;
 	ProjectileMovement->bRotationFollowsVelocity = true;
 	ProjectileMovement->bShouldBounce = true;
 
-	// Die after 3 seconds by default
-	InitialLifeSpan = 2.5f; //TODO adjustible
-
 	RadialForce = CreateDefaultSubobject<URadialForceComponent>(TEXT("RadialForce"));
-	RadialForce->Radius = 800.0f; //TODO adjustible
-
+	
+	//I don't know why if it's not attached to mesh the explosion will be at the begining of the coordinates
+	RadialForce->SetupAttachment(Mesh);
+	
+	//Defaults parameters. Can be adjusted in blueprint
+	RadialForce->bImpulseVelChange = true;
+	RadialForce->Radius = 800.0f;
+	RadialForce->ImpulseStrength = 500.0f;
 }
 
 void AGrenade::BeginPlay()
@@ -39,13 +44,8 @@ void AGrenade::BeginPlay()
 void AGrenade::SetupGrenade()
 {
 	ProjectileMovement->SetUpdatedComponent(Mesh);
-}
-
-void AGrenade::EndPlay(const EEndPlayReason::Type EndPlayReason)
-{
-	Super::EndPlay(EndPlayReason);
-
-	Explode();
+	
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle_Explode, this, &AGrenade::Explode, TimeToExplode, false);
 }
 
 void AGrenade::Explode()

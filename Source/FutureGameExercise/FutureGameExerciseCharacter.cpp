@@ -151,7 +151,9 @@ void AFutureGameExerciseCharacter::ThrowGrenade()
 		FVector Location = GrenadeSpawnPoint->GetComponentLocation();
 		FRotator Rotation = GrenadeSpawnPoint->GetComponentRotation();
 
-		GetWorld()->SpawnActor<AGrenade>(GrenadeClass, Location, Rotation, ActorSpawnParams);
+		AGrenade* GrenadeInstance = GetWorld()->SpawnActor<AGrenade>(GrenadeClass, Location, Rotation, ActorSpawnParams);
+		
+		GrenadeInstance->SetOwner(this); //not usable right now but may be useful
 	}
 }
 

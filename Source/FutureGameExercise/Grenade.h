@@ -25,12 +25,13 @@ class FUTUREGAMEEXERCISE_API AGrenade : public AActor
 	UPROPERTY(EditDefaultsOnly, Category = Appearance)
 	UParticleSystem* TrailVFX;
 
-	//TODO check if custumizible, if not add customizible parameters
-	UPROPERTY()
+	UPROPERTY(EditDefaultsOnly)
 	UProjectileMovementComponent* ProjectileMovement;
 
-	UPROPERTY()
+	UPROPERTY(EditDefaultsOnly)
 	URadialForceComponent* RadialForce;
+
+	FTimerHandle TimerHandle_Explode;
 	
 public:	
 	// Sets default values for this actor's properties
@@ -47,7 +48,8 @@ protected:
 
 	void SetupGrenade();
 	
-	void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
-	
 	void Explode();
+
+	UPROPERTY(EditDefaultsOnly, Category = Gameplay, meta = (AllowPrivateAccess = "true", ClampMin = "0.1", ClampMax = "20"))
+	float TimeToExplode{ 2.5f };
 };

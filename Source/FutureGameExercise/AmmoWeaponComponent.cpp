@@ -39,6 +39,11 @@ const int& UAmmoWeaponComponent::GetCurrentAmmo() const
 	return CurrentAmmo;
 }
 
+const int& UAmmoWeaponComponent::GetMaxAmmo() const
+{
+	return MaxAmmo;
+}
+
 void UAmmoWeaponComponent::Fire()
 {
 	if (CurrentAmmo == 0)
@@ -47,6 +52,7 @@ void UAmmoWeaponComponent::Fire()
 		return;
 	}
 
+	//If the parent fired successfully
 	if (UTP_WeaponComponent::FireImpl())
 	{
 		--CurrentAmmo;
@@ -61,23 +67,25 @@ void UAmmoWeaponComponent::Fire()
 	}
 }
 
-bool UAmmoWeaponComponent::SetupActionBindings()
+void UAmmoWeaponComponent::SetupWeapon()
 {
+		SetupWidget();
+
+		SetupActionBindings();
+}
+
+void UAmmoWeaponComponent::SetupActionBindings()
+{
+	//if setup of the parent is successfull
 	if (UTP_WeaponComponent::SetupActionBindings())
 	{
 		APlayerController* PlayerController = Cast<APlayerController>(Character->GetController());
 		UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerController->InputComponent);
 		EnhancedInputComponent->BindAction(ReloadAction, ETriggerEvent::Triggered, this, &UAmmoWeaponComponent::Reload);
-
-		//TODO get it outta here
-		SetupWidget();
-
-		return true;
 	}
 	else
 	{
 		Help::DisplayErrorMessage(TEXT("Something's wrong with bindings"));
-		return false;
 	}
 }
 

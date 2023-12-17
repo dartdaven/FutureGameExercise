@@ -4,62 +4,72 @@
 #include "TP_WeaponComponent.h"
 #include "HeatWeaponComponent.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnOverheatEvent);
-
 UCLASS(Blueprintable, BlueprintType, ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class FUTUREGAMEEXERCISE_API UHeatWeaponComponent : public UTP_WeaponComponent
 {
 	GENERATED_BODY()
 
 public:
-	//Seconds to wait between shots
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay, meta = (ClampMin = "0", ClampMax = "2"))
-	float FireInterval {0.3f};
+	UHeatWeaponComponent();
 
-	//Temperature points per second
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay, meta = (ClampMin = "0"))
-	float CooldownRate { 10.f };
+	void SetupWeapon() override;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay, meta = (ClampMin = "0"))
-	float TemperaturePerShot{ 10.f };
+	const float& GetTemperature() const;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay, meta = (ClampMin = "0"))
-	float CooldownPercentPoint { 0.2f };
+	const float& GetMaxTemperature() const;
+
+	bool IsOverheated() const;
+
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnOverheatEvent);
+	FOnOverheatEvent OverheatStateChanged;
+
+protected:
+	void Fire() override;
 
 	void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-	bool SetupActionBindings() override;
-	
-	void StartFire();
-	void StopFire();
-	void Fire() override;
-
-	UFUNCTION(BlueprintCallable)
-	const float& GetTemperature() const;
-
-	UFUNCTION(BlueprintCallable)
-	const float& GetMaxTemperature() const;
-
-	UFUNCTION(BlueprintCallable)
-	bool IsOverheated() const;
-
-	FOnOverheatEvent OverheatStateChanged;
-
-	UHeatWeaponComponent();
-
-	UPROPERTY(EditDefaultsOnly, Category = Widget)
-	TSubclassOf<class UUserWidget> HeatWidget;
-
 private:
-	float Temperature {};
-	float MaxTemperature { 100.f };
-	bool bIsOverheated { false };
+	//User Adjustible Variables
+	
+	//Seconds to wait between shots
+	UPROPERTY(EditAnywhere, Category = Gameplay, meta = (ClampMin = "0", ClampMax = "2"))
+	float FireInterval { 0.3f };
 
-	void ClearOverheat();
+	//Temperature points per second
+	UPROPERTY(EditAnywhere, Category = Gameplay, meta = (ClampMin = "0"))
+	float CooldownRate { 10.f };
+
+	UPROPERTY(EditAnywhere, Category = Gameplay, meta = (ClampMin = "0"))
+	float TemperaturePerShot { 10.f };
+
+	//Point of temperature when the weapon becomes not overheated anymore
+	UPROPERTY(EditAnywhere, Category = Gameplay, meta = (ClampMin = "0"))
+	float CooldownPercentPoint { 0.2f };
+
+	//Variables
+	float Temperature { 0 };
+	
+	float MaxTemperature { 100.f };
+	
+	bool bIsOverheated { false };
 
 	FTimerHandle TimerHandle_Cooldown;
 
 	FCriticalSection TemperatureMutex;
+
+	//Functions
+	void StartFire();
+
+	UFUNCTION() //Delegate callable
+	void StopFire();
+
+	void ClearOverheat();
+
+	void SetupActionBindings();
+	
+	//Widget
+	UPROPERTY(EditDefaultsOnly, Category = Widget)
+	TSubclassOf<class UUserWidget> HeatWidget;
 
 	class UWidgetComponent* HeatWidgetComponent;
 

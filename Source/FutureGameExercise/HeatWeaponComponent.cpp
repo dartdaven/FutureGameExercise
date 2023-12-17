@@ -17,35 +17,31 @@ void UHeatWeaponComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 	Temperature = FMath::Clamp(Temperature - (DeltaTime * CooldownRate), 0, MaxTemperature);
 }
 
-bool UHeatWeaponComponent::SetupActionBindings()
+void UHeatWeaponComponent::SetupWeapon()
+{
+	SetupWidget();
+
+	Character->OnWeaponSwitch.AddDynamic(this, &UHeatWeaponComponent::StopFire);
+
+	SetupActionBindings();
+}
+
+void UHeatWeaponComponent::SetupActionBindings()
 {
 	if (!IsValid(Character))
 	{
-		Help::DisplayErrorMessage(TEXT("Unable to setup bindings due to the character is absent"));
-		return false;
+		Help::DisplayErrorMessage(TEXT("%s: Unable to setup bindings due to the character is absent"), *GetNameSafe(this));
 	}
-
-	SetupWidget(); //TODO Get it out of here
 
 	if (APlayerController* PlayerController = Cast<APlayerController>(Character->GetController()))
 	{
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
-		{
-			// Set the priority of the mapping to 1, so that it overrides the Jump action with the Fire action when using touch input
-			Subsystem->AddMappingContext(WeaponMappingContext, 1);
-		}
-
 		if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerController->InputComponent))
 		{
 			// Fire
 			EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Started, this, &UHeatWeaponComponent::StartFire);
 			EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Completed, this, &UHeatWeaponComponent::StopFire);
-
-			return true;
 		}
 	}
-
-	return false;
 }
 
 void UHeatWeaponComponent::StartFire()

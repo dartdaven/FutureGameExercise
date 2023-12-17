@@ -39,7 +39,7 @@ void UAmmoWidget::Refresh()
 	RiffleAmmo->SetText(FText::AsNumber(Weapon->GetCurrentAmmo()));
 	InventoryAmmo->SetText(FText::AsNumber(Weapon->GetCharacter()->GetAmmoAmount()));
 
-	float AmmoPercent = static_cast<float>(Weapon->GetCurrentAmmo()) / Weapon->MaxAmmo;
+	float AmmoPercent = static_cast<float>(Weapon->GetCurrentAmmo()) / Weapon->GetMaxAmmo();
 
 	if (AmmoPercent < YellowTextPointPercent)
 	{

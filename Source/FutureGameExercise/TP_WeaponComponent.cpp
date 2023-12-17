@@ -17,11 +17,16 @@ UTP_WeaponComponent::UTP_WeaponComponent()
 	MuzzleOffset = FVector(100.0f, 0.0f, 10.0f);
 }
 
+void UTP_WeaponComponent::SetupWeapon()
+{
+	SetupActionBindings();
+}
+
 bool UTP_WeaponComponent::SetupActionBindings()
 {
 	if (!IsValid(Character))
 	{
-		Help::DisplayErrorMessage(TEXT("Unable to setup bindings due to the character is absent"));
+		Help::DisplayErrorMessage(TEXT("%s: Unable to setup bindings due to the character is absent"), *GetNameSafe(this));
 		return false;
 	}
 
@@ -38,7 +43,8 @@ bool UTP_WeaponComponent::SetupActionBindings()
 	}
 
 	return false;
-}	
+}
+
 
 void UTP_WeaponComponent::Fire()
 {

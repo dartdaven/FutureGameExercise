@@ -39,19 +39,9 @@ public:
 	/** Sets default values for this component's properties */
 	UTP_WeaponComponent();
 
-	virtual bool SetupActionBindings();
-
 	/** Make the weapon Fire a Projectile */
 	UFUNCTION(BlueprintCallable, Category="Weapon")
 	virtual void Fire();
-
-	bool FireImpl();
-
-	AFutureGameExerciseCharacter* GetCharacter() const;
-
-	void SetCharacter(AFutureGameExerciseCharacter* a_Character);
-
-	const UInputMappingContext* GetMappingContext() const;
 
 protected:
 	/** Ends gameplay for this component. */
@@ -60,4 +50,22 @@ protected:
 
 	/** The Character holding this weapon*/
 	AFutureGameExerciseCharacter* Character;
+
+
+	/* --- Custom code section --- */
+
+public:
+	//Is needed for the character to bind and unbind the weapon mappings
+	const UInputMappingContext* GetMappingContext() const;
+	
+	AFutureGameExerciseCharacter* GetCharacter() const;
+
+	void SetCharacter(AFutureGameExerciseCharacter* a_Character);
+
+	virtual void SetupWeapon();
+
+protected:
+	bool SetupActionBindings();
+
+	bool FireImpl();
 };

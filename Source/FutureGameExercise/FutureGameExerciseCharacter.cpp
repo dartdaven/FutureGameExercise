@@ -17,9 +17,6 @@
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
-//////////////////////////////////////////////////////////////////////////
-// AFutureGameExerciseCharacter
-
 AFutureGameExerciseCharacter::AFutureGameExerciseCharacter()
 {
 	// Character doesnt have a rifle at start
@@ -50,8 +47,7 @@ AFutureGameExerciseCharacter::AFutureGameExerciseCharacter()
 	AmmoAmount = 0;
 }
 
-//////////////////////////////////////////////////////////////////////////// Input
-
+//Is called from a Pawn class 
 void AFutureGameExerciseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	// Set up action bindings
@@ -91,18 +87,20 @@ void AFutureGameExerciseCharacter::SwitchWeapon()
 	}
 	else
 	{
-		Help::DisplayErrorMessage(TEXT("Weapon not found in the array"));
+		Help::DisplayErrorMessage(TEXT("%s: Weapon not found in the array"), *GetNameSafe(this));
 		return;
 	}
 
 	bHasRifle = false; //for animation purposes
 
 	DeactivateWeapon(ActiveWeapon);
+	OnWeaponSwitch.Broadcast();
 
 	auto CallbackWithArguments = [this, IndexOfNewWeapon]() { ActivateWeapon(Weapons[IndexOfNewWeapon]); };
 
 	FTimerHandle TimerHandle;
 
+	//TODO get the right time from animation, so .5f won't be a magic number
 	GetWorld()->GetTimerManager().SetTimer(TimerHandle, CallbackWithArguments, .5f, false);
 }
 
@@ -170,12 +168,22 @@ void AFutureGameExerciseCharacter::OnWeaponPickUp(UTP_WeaponComponent* WeaponCom
 {
 	if (!IsValid(WeaponComponent))
 	{
-		Help::DisplayErrorMessage(TEXT("Wrong pointer was passed to a character as a weapon"));
+		Help::DisplayErrorMessage(TEXT("%s: Wrong pointer was passed as a weapon"), *GetNameSafe(this));
 		return;
 	}
 
-	//TODO This is not valid check because every object is unique, and I want to check if I have the same TYPE of the object
-	if (!Weapons.Contains(WeaponComponent))
+	bool IsAlreadyObtained{ false };
+
+	for (UTP_WeaponComponent* Weapon : Weapons)
+	{
+		if (GetNameSafe(WeaponComponent) == GetNameSafe(Weapon))
+		{
+			Help::DisplayDebugMessage(TEXT("%s: I already have this weapon"), *GetNameSafe(this));
+			IsAlreadyObtained = true;
+		}
+	}
+
+	if (!IsAlreadyObtained)
 	{
 		Weapons.Add(WeaponComponent);
 
@@ -183,7 +191,7 @@ void AFutureGameExerciseCharacter::OnWeaponPickUp(UTP_WeaponComponent* WeaponCom
 		WeaponComponent->AttachToComponent(GetMesh(), AttachmentRules, FName(TEXT("GripPoint")));
 
 		WeaponComponent->SetCharacter(this);
-		WeaponComponent->SetupActionBindings();
+		WeaponComponent->SetupWeapon();
 
 		if (!bHasRifle) 
 		{

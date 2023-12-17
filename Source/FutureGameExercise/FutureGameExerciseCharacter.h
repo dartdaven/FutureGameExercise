@@ -22,6 +22,8 @@ DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 UCLASS(config=Game)
 class AFutureGameExerciseCharacter : public ACharacter
 {
+	/* --- Default code section --- */
+
 	GENERATED_BODY()
 
 	/* First person camera */
@@ -36,11 +38,6 @@ class AFutureGameExerciseCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	UInputAction* MoveAction;
 
-	UPROPERTY(EditDefaultsOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction* ThrowGrenadeAction;
-
-	UPROPERTY(EditDefaultsOnly, Category = Grenade)
-	TSubclassOf<class AGrenade> GrenadeClass;
 	
 public:
 	AFutureGameExerciseCharacter();
@@ -64,6 +61,22 @@ public:
 	UFUNCTION(BlueprintCallable, Category = Weapon)
 	bool GetHasRifle();
 
+
+protected:
+	/* Called for movement input */
+	void Move(const FInputActionValue& Value);
+
+	/* Called for looking input */
+	void Look(const FInputActionValue& Value);
+
+	/* APawn interface */
+	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
+
+	
+	/* --- Custom code section --- */
+
+public:
+
 	UFUNCTION(BlueprintCallable, Category = Inventory)
 	int TakeOutAmmo(const int& amountRequested);
 
@@ -79,38 +92,40 @@ public:
 	UFUNCTION(BlueprintCallable, Category = Interaction)
 	void OnWeaponPickUp(UTP_WeaponComponent* WeaponComponent);
 
-protected:
-	/* Called for movement input */
-	void Move(const FInputActionValue& Value);
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnWeaponSwitch);
+	FOnWeaponSwitch OnWeaponSwitch;
 
-	/* Called for looking input */
-	void Look(const FInputActionValue& Value);
+private:
 
-	/* APawn interface */
-	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
+	//Grenade
+	UPROPERTY(EditDefaultsOnly, Category = Grenade)
+	USceneComponent* GrenadeSpawnPoint;
 
+	UPROPERTY(EditDefaultsOnly, Category = Input)
+	UInputAction* ThrowGrenadeAction;
+
+	UPROPERTY(EditDefaultsOnly, Category = Grenade)
+	TSubclassOf<class AGrenade> GrenadeClass;
+
+	void ThrowGrenade();
+	
+	//Weapon switching
+	TArray<UTP_WeaponComponent*> Weapons;
+
+	UTP_WeaponComponent* ActiveWeapon = nullptr;
+	
+	UPROPERTY(EditDefaultsOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* SwitchWeaponAction;
+	
 	void SwitchWeapon();
 
 	void ActivateWeapon(UTP_WeaponComponent* WeaponToActivate);
 
 	void DeactivateWeapon(UTP_WeaponComponent* WeaponToDeactivate);
 
-	void ThrowGrenade();
-
-
-private:
-	UPROPERTY(EditDefaultsOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction* SwitchWeaponAction;
-
-	UTP_WeaponComponent* ActiveWeapon = nullptr;
-
-	TArray<UTP_WeaponComponent*> Weapons;
-
+	//Inventory
 	UPROPERTY(EditDefaultsOnly, Category = Inventory, meta = (AllowPrivateAccess = "true", ClampMin = "1", ClampMax = "100"))
 	int MaxAmmoAmount;
 	
 	int AmmoAmount;
-
-	UPROPERTY(EditDefaultsOnly, Category = Grenade, meta = (AllowPrivateAccess = "true"))
-	USceneComponent* GrenadeSpawnPoint;
 };

@@ -14,6 +14,7 @@
 #include "TP_WeaponComponent.h"
 #include "HelpingTools.h"
 #include "Grenade.h"
+#include "GrenadeCollectibleComponent.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -42,9 +43,6 @@ AFutureGameExerciseCharacter::AFutureGameExerciseCharacter()
 	MainMesh->CastShadow = false;
 	MainMesh->SetRelativeLocation(FVector(-30.f, 0.f, -150.f));
 	MainMesh->SetRelativeRotation(FirstPersonCameraComponent->GetRelativeRotation());
-
-	MaxAmmoAmount = 30;
-	AmmoAmount = 0;
 }
 
 //Is called from a Pawn class 
@@ -140,6 +138,12 @@ void AFutureGameExerciseCharacter::DeactivateWeapon(UTP_WeaponComponent* WeaponT
 
 void AFutureGameExerciseCharacter::ThrowGrenade()
 {
+	if (GrenadeAmount < 1)
+	{
+		Help::DisplayDebugMessage(TEXT("%s: No grenades to throw"), *GetNameSafe(this));
+		return;
+	}
+
 	if (GrenadeClass != nullptr || GetController() != nullptr)
 	{
 
@@ -152,6 +156,12 @@ void AFutureGameExerciseCharacter::ThrowGrenade()
 		AGrenade* GrenadeInstance = GetWorld()->SpawnActor<AGrenade>(GrenadeClass, Location, Rotation, ActorSpawnParams);
 		
 		GrenadeInstance->SetOwner(this); //not usable right now but may be useful
+
+		--GrenadeAmount;
+	}
+	else
+	{
+		Help::DisplayErrorMessage(TEXT("%s: Can't throw a grenade"), *GetNameSafe(this));
 	}
 }
 
@@ -203,6 +213,13 @@ void AFutureGameExerciseCharacter::OnWeaponPickUp(UTP_WeaponComponent* WeaponCom
 			DeactivateWeapon(WeaponComponent);
 		}
 	}
+}
+
+void AFutureGameExerciseCharacter::OnGrenadePickUp(UGrenadeCollectibleComponent* GrenadeComponent)
+{
+	int GrenadeNeeded = MaxGrenadeAmount - GrenadeAmount;
+
+	GrenadeAmount += GrenadeComponent->TryTakeGrenades(GrenadeNeeded);
 }
 
 void AFutureGameExerciseCharacter::Move(const FInputActionValue& Value)

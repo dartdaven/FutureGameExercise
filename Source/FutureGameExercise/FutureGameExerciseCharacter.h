@@ -16,6 +16,7 @@ struct FInputActionValue;
 
 class UAmmoCollectibleComponent;
 class UTP_WeaponComponent;
+class UGrenadeCollectibleComponent;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 
@@ -92,6 +93,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = Interaction)
 	void OnWeaponPickUp(UTP_WeaponComponent* WeaponComponent);
 
+	UFUNCTION(BlueprintCallable, Category = Interaction)
+	void OnGrenadePickUp(UGrenadeCollectibleComponent* GrenadeComponent);
+
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnWeaponSwitch);
 	FOnWeaponSwitch OnWeaponSwitch;
 
@@ -125,7 +129,12 @@ private:
 
 	//Inventory
 	UPROPERTY(EditDefaultsOnly, Category = Inventory, meta = (AllowPrivateAccess = "true", ClampMin = "1", ClampMax = "100"))
-	int MaxAmmoAmount;
+	int MaxAmmoAmount { 30 };
 	
-	int AmmoAmount;
+	int AmmoAmount { 0 };
+
+	UPROPERTY(EditDefaultsOnly, Category = Inventory, meta = (AllowPrivateAccess = "true", ClampMin = "1", ClampMax = "20"))
+	int MaxGrenadeAmount { 5 };
+
+	int GrenadeAmount { 0 };
 };

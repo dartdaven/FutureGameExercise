@@ -52,4 +52,11 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = Gameplay, meta = (AllowPrivateAccess = "true", ClampMin = "0.1", ClampMax = "20"))
 	float TimeToExplode{ 2.5f };
+
+	UPROPERTY(EditDefaultsOnly, Category = Gameplay, meta = (AllowPrivateAccess = "true", ClampMin = "0", ClampMax = "100"))
+	int OnHitImpulseMultiplier{ 40 };
+
+	UFUNCTION()
+	void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+
 };

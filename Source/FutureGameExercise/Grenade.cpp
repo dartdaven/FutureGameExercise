@@ -5,6 +5,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "PhysicsEngine/RadialForceComponent.h"
 
+#include "HelpingTools.h"
+
 // Sets default values
 AGrenade::AGrenade()
 {
@@ -13,7 +15,9 @@ AGrenade::AGrenade()
 
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	Mesh->SetSimulatePhysics(true);
+	Mesh->SetNotifyRigidBodyCollision(true); // For generation of Hit events 
 	Mesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore); //Ignore player collision,  
+	Mesh->OnComponentHit.AddDynamic(this, &AGrenade::OnHit);
 
 	ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovement"));
 	
@@ -25,7 +29,7 @@ AGrenade::AGrenade()
 
 	RadialForce = CreateDefaultSubobject<URadialForceComponent>(TEXT("RadialForce"));
 	
-	//I don't know why if it's not attached to mesh the explosion will be at the begining of the coordinates
+	//I don't know why, if it's not attached to mesh the explosion will be at the begining of the coordinates
 	RadialForce->SetupAttachment(Mesh);
 	
 	//Defaults parameters. Can be adjusted in blueprint
@@ -63,4 +67,12 @@ void AGrenade::Explode()
 	RadialForce->FireImpulse();
 
 	Destroy();
+}
+
+void AGrenade::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+{
+	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr) && OtherComp->IsSimulatingPhysics())
+	{
+		OtherComp->AddImpulseAtLocation(ProjectileMovement->Velocity * OnHitImpulseMultiplier, GetActorLocation());
+	}
 }

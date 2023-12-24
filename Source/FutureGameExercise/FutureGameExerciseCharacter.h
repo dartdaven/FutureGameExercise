@@ -17,6 +17,7 @@ struct FInputActionValue;
 class UAmmoCollectibleComponent;
 class UTP_WeaponComponent;
 class UGrenadeCollectibleComponent;
+class UThrowStrengthRadialWidget;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 
@@ -84,6 +85,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = Inventory)
 	const int& GetAmmoAmount() const;
 
+	const float& GetThrowStrength() const { return ThrowStrength; };
+
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnAmmoChange);
 	FOnAmmoChange OnAmmoChange;
 
@@ -100,19 +103,6 @@ public:
 	FOnWeaponSwitch OnWeaponSwitch;
 
 private:
-
-	//Grenade
-	UPROPERTY(EditDefaultsOnly, Category = Grenade)
-	USceneComponent* GrenadeSpawnPoint;
-
-	UPROPERTY(EditDefaultsOnly, Category = Input)
-	UInputAction* ThrowGrenadeAction;
-
-	UPROPERTY(EditDefaultsOnly, Category = Grenade)
-	TSubclassOf<class AGrenade> GrenadeClass;
-
-	void ThrowGrenade();
-	
 	//Weapon switching
 	TArray<UTP_WeaponComponent*> Weapons;
 
@@ -137,4 +127,38 @@ private:
 	int MaxGrenadeAmount { 5 };
 
 	int GrenadeAmount { 0 };
+
+	//Grenade
+	UPROPERTY(EditDefaultsOnly, Category = Grenade)
+	USceneComponent* GrenadeSpawnPoint;
+
+	UPROPERTY(EditDefaultsOnly, Category = Input)
+	UInputAction* ThrowGrenadeAction;
+
+	UPROPERTY(EditDefaultsOnly, Category = Grenade)
+	TSubclassOf<class AGrenade> GrenadeClass;
+
+	void StartThrowingGrenade();
+
+	void StopThrowingGrenade();
+
+	void ThrowGrenade();	
+
+	float ThrowStrength{ 0 };
+
+	void IncrementThrowStrength();
+
+	UPROPERTY(EditDefaultsOnly, Category = Grenade, meta = (AllowPrivateAccess = "true", ClampMin = "0.1", ClampMax = "3"))
+	float SecondsToMaxThrowStrength{ 0.8f };
+
+	float SecondsBetweenIncrementingThrowStrength{ 0.03f };
+
+	bool bHasGrenade{ false };
+
+	FTimerHandle TimerHandle_ThrowStrengthIncreaser;
+
+	UPROPERTY(EditDefaultsOnly, Category = Grenade)
+	TSubclassOf<UThrowStrengthRadialWidget> ThrowWidgetClass;
+
+	UThrowStrengthRadialWidget* ThrowWidget;
 };

@@ -15,15 +15,13 @@ AGrenade::AGrenade()
 
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	Mesh->SetSimulatePhysics(true);
-	Mesh->SetNotifyRigidBodyCollision(true); // For generation of Hit events 
 	Mesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore); //Ignore player collision,  
-	Mesh->OnComponentHit.AddDynamic(this, &AGrenade::OnHit);
 
 	ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovement"));
 	
 	//Default parameters. Can be adjusted in blueprint
-	ProjectileMovement->InitialSpeed = 1000.f;
-	ProjectileMovement->MaxSpeed = 1000.f;
+	ProjectileMovement->MaxSpeed = 1500.f;
+	ProjectileMovement->InitialSpeed = ProjectileMovement->MaxSpeed;
 	ProjectileMovement->bRotationFollowsVelocity = true;
 	ProjectileMovement->bShouldBounce = true;
 
@@ -36,6 +34,11 @@ AGrenade::AGrenade()
 	RadialForce->bImpulseVelChange = true;
 	RadialForce->Radius = 800.0f;
 	RadialForce->ImpulseStrength = 500.0f;
+}
+
+void AGrenade::SetInitialSpeedPercent(float aInitialSpeed)
+{
+	ProjectileMovement->InitialSpeed = ProjectileMovement->MaxSpeed * FMath::Clamp(aInitialSpeed, 0, 1);
 }
 
 void AGrenade::BeginPlay()
@@ -67,12 +70,4 @@ void AGrenade::Explode()
 	RadialForce->FireImpulse();
 
 	Destroy();
-}
-
-void AGrenade::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
-{
-	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr) && OtherComp->IsSimulatingPhysics())
-	{
-		OtherComp->AddImpulseAtLocation(ProjectileMovement->Velocity * OnHitImpulseMultiplier, GetActorLocation());
-	}
 }

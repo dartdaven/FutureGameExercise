@@ -12,6 +12,11 @@
 				"Engine",
 				"UMG"
 			]
+		},
+		{
+			"Name": "AdvancedWidgets",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
 		}
 	],
 	"Plugins": [

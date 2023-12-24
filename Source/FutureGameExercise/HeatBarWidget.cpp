@@ -6,6 +6,7 @@
 #include "HeatWeaponComponent.h"
 #include "HelpingTools.h"
 
+
 void UHeatBarWidget::SetWeapon(UHeatWeaponComponent* a_Weapon)
 {
 	Weapon = a_Weapon;

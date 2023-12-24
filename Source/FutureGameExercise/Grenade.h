@@ -4,7 +4,6 @@
 #include "GameFramework/Actor.h"
 #include "Grenade.generated.h"
 
-//class UStaticMeshComponent;
 class UProjectileMovementComponent;
 class URadialForceComponent;
 
@@ -40,7 +39,11 @@ public:
 	//Getters
 	UStaticMeshComponent* GetMesh() const { return Mesh; }
 
-	UProjectileMovementComponent* GetProjectileMovement() const { return ProjectileMovement; }
+	/** 
+	* Percent from MaxSpeed
+	* Pass value from 0 to 1
+	*/
+	void SetInitialSpeedPercent(float aInitialSpeed);
 
 protected:
 
@@ -55,8 +58,5 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = Gameplay, meta = (AllowPrivateAccess = "true", ClampMin = "0", ClampMax = "100"))
 	int OnHitImpulseMultiplier{ 40 };
-
-	UFUNCTION()
-	void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
 };

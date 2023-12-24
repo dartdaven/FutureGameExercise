@@ -8,6 +8,11 @@
 #include "HeatBarWidget.h"
 #include "HelpingTools.h"
 
+UHeatWeaponComponent::UHeatWeaponComponent()
+{
+	HeatWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("HeatWidgetComponent"));
+}
+
 void UHeatWeaponComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
@@ -134,11 +139,6 @@ const float& UHeatWeaponComponent::GetMaxTemperature() const
 bool UHeatWeaponComponent::IsOverheated() const
 {
 	return bIsOverheated;
-}
-
-UHeatWeaponComponent::UHeatWeaponComponent()
-{
-	HeatWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("HeatWidgetComponent"));
 }
 
 void UHeatWeaponComponent::ClearOverheat()

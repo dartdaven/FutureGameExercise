@@ -14,9 +14,8 @@ class UInputAction;
 class UInputMappingContext;
 struct FInputActionValue;
 
-class UAmmoCollectibleComponent;
+class AAmmoCollectible;
 class UTP_WeaponComponent;
-class UGrenadeCollectibleComponent;
 class UThrowStrengthRadialWidget;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
@@ -91,13 +90,10 @@ public:
 	FOnAmmoChange OnAmmoChange;
 
 	UFUNCTION(BlueprintCallable, Category = Interaction)
-	void OnAmmoPickUp(UAmmoCollectibleComponent* AmmoComponent);
+	void OnAmmoPickUp(AAmmoCollectible* AmmoComponent);
 
 	UFUNCTION(BlueprintCallable, Category = Interaction)
 	void OnWeaponPickUp(UTP_WeaponComponent* WeaponComponent);
-
-	UFUNCTION(BlueprintCallable, Category = Interaction)
-	void OnGrenadePickUp(UGrenadeCollectibleComponent* GrenadeComponent);
 
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnWeaponSwitch);
 	FOnWeaponSwitch OnWeaponSwitch;

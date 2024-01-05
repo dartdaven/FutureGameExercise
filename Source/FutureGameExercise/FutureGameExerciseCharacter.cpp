@@ -12,11 +12,10 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 
-#include "AmmoCollectibleComponent.h"
+#include "AmmoCollectible.h"
 #include "TP_WeaponComponent.h"
 #include "HelpingTools.h"
 #include "Grenade.h"
-#include "GrenadeCollectibleComponent.h"
 #include "ThrowStrengthRadialWidget.h"
 #include "FutureGameExercisePlayerController.h"
 
@@ -136,13 +135,41 @@ const int& AFutureGameExerciseCharacter::GetAmmoAmount() const
 	return AmmoAmount;
 }
 
-void AFutureGameExerciseCharacter::OnAmmoPickUp(UAmmoCollectibleComponent* AmmoComponent)
+void AFutureGameExerciseCharacter::OnAmmoPickUp(AAmmoCollectible* AmmoCollectible)
 {
-	int AmmoNeeded = MaxAmmoAmount - AmmoAmount;
+	if (AmmoCollectible->GetType() == EAmmoType::Ammo)
+	{
+		int AmmoNeeded = MaxAmmoAmount - AmmoAmount;
 
-	AmmoAmount += AmmoComponent->TryTakeAmmo(AmmoNeeded);
+		AmmoAmount += AmmoCollectible->TryTakeAmmo(AmmoNeeded);
+		
+		OnAmmoChange.Broadcast();
+	}
+	else if (AmmoCollectible->GetType() == EAmmoType::Grenade)
+	{
+		int GrenadeNeeded = MaxGrenadeAmount - GrenadeAmount;
 
-	OnAmmoChange.Broadcast();
+		GrenadeAmount += AmmoCollectible->TryTakeAmmo(GrenadeNeeded);
+
+		if (!bHasGrenade)
+		{
+			AFutureGameExercisePlayerController* PlayerController = GetController<AFutureGameExercisePlayerController>();
+			if (IsValid(PlayerController))
+			{
+				ThrowWidget = CreateWidget<UThrowStrengthRadialWidget>(PlayerController, ThrowWidgetClass);
+			
+				if (IsValid(ThrowWidget))
+				{
+					ThrowWidget->SetCharacter(this);
+					ThrowWidget->AddToPlayerScreen();
+				}
+			}
+		}
+	}
+	else
+	{
+		Help::DisplayErrorMessage(TEXT("%s: Unknown type of a collectible"), *GetNameSafe(this));
+	}
 }
 
 void AFutureGameExerciseCharacter::OnWeaponPickUp(UTP_WeaponComponent* WeaponComponent)
@@ -182,28 +209,6 @@ void AFutureGameExerciseCharacter::OnWeaponPickUp(UTP_WeaponComponent* WeaponCom
 		else
 		{
 			DeactivateWeapon(WeaponComponent);
-		}
-	}
-}
-
-void AFutureGameExerciseCharacter::OnGrenadePickUp(UGrenadeCollectibleComponent* GrenadeComponent)
-{
-	int GrenadeNeeded = MaxGrenadeAmount - GrenadeAmount;
-
-	GrenadeAmount += GrenadeComponent->TryTakeGrenades(GrenadeNeeded);
-
-	if (!bHasGrenade)
-	{
-		AFutureGameExercisePlayerController* PlayerController = GetController<AFutureGameExercisePlayerController>();
-		if (IsValid(PlayerController))
-		{
-			ThrowWidget = CreateWidget<UThrowStrengthRadialWidget>(PlayerController, ThrowWidgetClass);
-			
-			if (IsValid(ThrowWidget))
-			{
-				ThrowWidget->SetCharacter(this);
-				ThrowWidget->AddToPlayerScreen();
-			}
 		}
 	}
 }

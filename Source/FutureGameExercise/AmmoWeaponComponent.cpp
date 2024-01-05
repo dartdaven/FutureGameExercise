@@ -97,7 +97,6 @@ void UAmmoWeaponComponent::SetupWidget()
 
 	AmmoWidgetComponent->SetCastShadow(false);
 
-	FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, true);
 	AmmoWidgetComponent->AttachToComponent(this, FAttachmentTransformRules::KeepRelativeTransform);
 
 	AmmoWidgetComponent->SetWidgetClass(AmmoWidget);

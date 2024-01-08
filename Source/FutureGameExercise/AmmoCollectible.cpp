@@ -36,7 +36,7 @@ void AAmmoCollectible::BeginPlay()
 
 	if (AmmoType == EAmmoType::Ammo)
 	{
-		if (AmmoCollectibleMesh != nullptr)
+		if (IsValid(AmmoCollectibleMesh))
 		{
 			Mesh->SetStaticMesh(AmmoCollectibleMesh);
 			
@@ -49,7 +49,7 @@ void AAmmoCollectible::BeginPlay()
 	}
 	else if (AmmoType == EAmmoType::Grenade)
 	{
-		if (GrenadeCollectibleMesh != nullptr)
+		if (IsValid(GrenadeCollectibleMesh))
 		{
 			Mesh->SetStaticMesh(GrenadeCollectibleMesh);
 			ContainingAmmoText->SetVisibility(false);
@@ -84,7 +84,7 @@ void AAmmoCollectible::Tick(float DeltaTime)
 
 void AAmmoCollectible::NotifyThePlayer(AFutureGameExerciseCharacter* aCharacter)
 {
-	if (aCharacter != nullptr)
+	if (IsValid(aCharacter))
 	{
 		aCharacter->OnAmmoPickUp(this);
 	}

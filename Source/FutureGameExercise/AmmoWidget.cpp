@@ -10,11 +10,11 @@ void UAmmoWidget::SetWeapon(UAmmoWeaponComponent* a_Weapon)
 {
 	Weapon = a_Weapon;
 
-	if (Weapon != nullptr)
+	if (IsValid(Weapon))
 	{
 		Weapon->OnAmmoChange.AddDynamic(this, &UAmmoWidget::Refresh);
 
-		if (Weapon->GetCharacter() != nullptr)
+		if (IsValid(Weapon->GetCharacter()))
 		{
 			Weapon->GetCharacter()->OnAmmoChange.AddDynamic(this, &UAmmoWidget::Refresh);
 

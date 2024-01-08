@@ -31,7 +31,7 @@ void UThrowStrengthRadialWidget::NativeTick(const FGeometry& MyGeometry, float I
 {
 	Super::NativeTick(MyGeometry, InDeltaTime);
 
-	if (Character != nullptr)
+	if (IsValid(Character))
 	{
 		RadialSlider->SetValue(Character->GetThrowStrength());
 	}

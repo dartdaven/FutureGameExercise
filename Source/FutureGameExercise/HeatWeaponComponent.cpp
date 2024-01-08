@@ -11,6 +11,8 @@
 UHeatWeaponComponent::UHeatWeaponComponent()
 {
 	HeatWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("HeatWidgetComponent"));
+
+	WeaponName = TEXT("Default Heat Weapon");
 }
 
 void UHeatWeaponComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)

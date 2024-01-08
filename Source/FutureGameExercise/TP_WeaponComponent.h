@@ -40,7 +40,7 @@ public:
 	UTP_WeaponComponent();
 
 	/** Make the weapon Fire a Projectile */
-	UFUNCTION(BlueprintCallable, Category="Weapon")
+	UFUNCTION(BlueprintCallable, Category = Weapon)
 	virtual void Fire();
 
 protected:
@@ -64,8 +64,13 @@ public:
 
 	virtual void SetupWeapon();
 
+	FString GetWeaponName() { return WeaponName; }
+
 protected:
 	bool SetupActionBindings();
 
 	bool FireImpl();
+
+	UPROPERTY(EditAnywhere /*For instances to have their own name*/, Category = Gameplay)
+	FString WeaponName{ TEXT("Default Weapon") };
 };

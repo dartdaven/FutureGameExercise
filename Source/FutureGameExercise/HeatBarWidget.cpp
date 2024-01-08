@@ -11,7 +11,7 @@ void UHeatBarWidget::SetWeapon(UHeatWeaponComponent* a_Weapon)
 {
 	Weapon = a_Weapon;
 
-	if (Weapon != nullptr)
+	if (IsValid(Weapon))
 	{
 		Weapon->OverheatStateChanged.AddDynamic(this, &UHeatBarWidget::SetOverheatedTextVisibility);
 	}
@@ -38,7 +38,7 @@ void UHeatBarWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	if (Weapon != nullptr)
+	if (IsValid(Weapon))
 	{
 		Weapon->OverheatStateChanged.AddDynamic(this, &UHeatBarWidget::SetOverheatedTextVisibility);
 	}
@@ -48,7 +48,7 @@ void UHeatBarWidget::NativeConstruct()
 
 void UHeatBarWidget::SetOverheatedTextVisibility()
 {
-	if (Weapon != nullptr)
+	if (IsValid(Weapon))
 	{
 		if (Weapon->IsOverheated())
 		{

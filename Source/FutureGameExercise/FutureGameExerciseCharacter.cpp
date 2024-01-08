@@ -92,7 +92,7 @@ void AFutureGameExerciseCharacter::Move(const FInputActionValue& Value)
 	// input is a Vector2D
 	FVector2D MovementVector = Value.Get<FVector2D>();
 
-	if (Controller != nullptr)
+	if (IsValid(Controller))
 	{
 		// add movement 
 		AddMovementInput(GetActorForwardVector(), MovementVector.Y);
@@ -105,7 +105,7 @@ void AFutureGameExerciseCharacter::Look(const FInputActionValue& Value)
 	// input is a Vector2D
 	FVector2D LookAxisVector = Value.Get<FVector2D>();
 
-	if (Controller != nullptr)
+	if (IsValid(Controller))
 	{
 		// add yaw and pitch input to controller
 		AddControllerYawInput(LookAxisVector.X);
@@ -184,7 +184,7 @@ void AFutureGameExerciseCharacter::OnWeaponPickUp(UTP_WeaponComponent* WeaponCom
 
 	for (UTP_WeaponComponent* Weapon : Weapons)
 	{
-		if (GetNameSafe(WeaponComponent) == GetNameSafe(Weapon))
+		if (WeaponComponent->GetWeaponName() == Weapon->GetWeaponName())
 		{
 			Help::DisplayDebugMessage(TEXT("%s: I already have this weapon"), *GetNameSafe(this));
 			IsAlreadyObtained = true;
@@ -305,7 +305,7 @@ void AFutureGameExerciseCharacter::ThrowGrenade()
 		return;
 	}
 
-	if (GrenadeClass != nullptr || GetController() != nullptr)
+	if (IsValid(GrenadeClass) || IsValid(GetController()))
 	{
 		FTransform Transform = FTransform(GrenadeSpawnPoint->GetComponentRotation(), GrenadeSpawnPoint->GetComponentLocation());
 		ESpawnActorCollisionHandlingMethod CollisionMethod = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;

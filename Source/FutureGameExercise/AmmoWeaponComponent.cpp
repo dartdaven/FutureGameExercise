@@ -12,9 +12,11 @@
 UAmmoWeaponComponent::UAmmoWeaponComponent()
 {
 	MaxAmmo = 10;
-	CurrentAmmo = MaxAmmo;
+	CurrentAmmo = MaxAmmo; //TODO make different instances to have not default 10 max ammo as current ammo
 
 	AmmoWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("AmmoWidgetComponent"));
+
+	WeaponName = TEXT("Default Ammo Weapon");
 }
 
 void UAmmoWeaponComponent::Reload()

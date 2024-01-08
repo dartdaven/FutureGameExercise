@@ -8,10 +8,8 @@
 #include "FutureGameExerciseCharacter.generated.h"
 
 class UInputComponent;
-class USkeletalMeshComponent;
 class UCameraComponent;
 class UInputAction;
-class UInputMappingContext;
 struct FInputActionValue;
 
 class AAmmoCollectible;

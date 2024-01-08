@@ -24,7 +24,7 @@ void UTP_PickUpComponent::OnSphereBeginOverlap(UPrimitiveComponent* OverlappedCo
 
 	// Checking if it is a First Person Character overlapping
 	AFutureGameExerciseCharacter* Character = Cast<AFutureGameExerciseCharacter>(OtherActor);
-	if(Character != nullptr)
+	if(IsValid(Character))
 	{
 		// Notify that the actor is being picked up
 		OnPickUp.Broadcast(Character);

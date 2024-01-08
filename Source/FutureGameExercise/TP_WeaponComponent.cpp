@@ -61,10 +61,10 @@ bool UTP_WeaponComponent::FireImpl()
 	bool ProjectileFired{ false }, SFXPlayed{ false }, AnimationPlayed{ false };
 
 	// Try and fire a projectile
-	if (ProjectileClass != nullptr)
+	if (IsValid(ProjectileClass))
 	{
 		UWorld* const World = GetWorld();
-		if (World != nullptr)
+		if (IsValid(World))
 		{
 			APlayerController* PlayerController = Cast<APlayerController>(Character->GetController());
 			const FRotator SpawnRotation = PlayerController->PlayerCameraManager->GetCameraRotation();
@@ -84,7 +84,7 @@ bool UTP_WeaponComponent::FireImpl()
 	}
 	
 	// Try and play the sound if specified
-	if (FireSound != nullptr)
+	if (IsValid(FireSound))
 	{
 		UGameplayStatics::PlaySoundAtLocation(this, FireSound, Character->GetActorLocation());
 
@@ -92,11 +92,11 @@ bool UTP_WeaponComponent::FireImpl()
 	}
 	
 	// Try and play a firing animation if specified
-	if (FireAnimation != nullptr)
+	if (IsValid(FireAnimation))
 	{
 		// Get the animation object for the arms mesh
 		UAnimInstance* AnimInstance = Character->GetMesh()->GetAnimInstance();
-		if (AnimInstance != nullptr)
+		if (IsValid(AnimInstance))
 		{
 			AnimInstance->Montage_Play(FireAnimation, 1.f);
 

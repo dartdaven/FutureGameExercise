@@ -4,6 +4,7 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "PhysicsEngine/RadialForceComponent.h"
+#include "Particles/ParticleSystem.h"
 
 #include "HelpingTools.h"
 
@@ -57,7 +58,7 @@ void AGrenade::SetupGrenade()
 
 void AGrenade::Explode()
 {
-	if (ExplosionVFX != nullptr)
+	if (IsValid(ExplosionVFX))
 	{
 		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ExplosionVFX, GetActorLocation());
 	}

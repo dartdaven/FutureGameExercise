@@ -12,6 +12,9 @@ UHeatWeaponComponent::UHeatWeaponComponent()
 {
 	HeatWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("HeatWidgetComponent"));
 
+	//Default parameters can be adjusted in blueprint
+	WidgetTransform = FTransform(FRotator(0.f, 270.f, 0.f), FVector(-15.f, 45.f, 20.f), FVector(0.15f));
+
 	WeaponName = TEXT("Default Heat Weapon");
 }
 
@@ -152,9 +155,7 @@ void UHeatWeaponComponent::ClearOverheat()
 
 void UHeatWeaponComponent::SetupWidget()
 {
-	//MagicNumbers Alert
-	HeatWidgetComponent->SetRelativeLocationAndRotation(FVector(-15.f, 45.f, 20.f), FQuat(FRotator(0.f, 270.f, 0.f)));
-	HeatWidgetComponent->SetRelativeScale3D(FVector(0.15f, 0.15f, 0.15f));
+	HeatWidgetComponent->SetRelativeTransform(WidgetTransform);
 
 	HeatWidgetComponent->SetCastShadow(false);
 

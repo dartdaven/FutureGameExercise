@@ -20,6 +20,8 @@ public:
 	FOnAmmoChange OnAmmoChange;
 
 protected:
+	void InitializeComponent() override;
+
 	void Fire() override;
 
 	void SetupWeapon() override;
@@ -29,8 +31,9 @@ private:
 	class UInputAction* ReloadAction;
 
 	UPROPERTY(EditAnywhere, Category = Gameplay, meta = (ClampMin = "0", ClampMax = "20"))
-	int MaxAmmo;
+	int MaxAmmo{ 10 };
 
+	UPROPERTY()
 	int CurrentAmmo;
 	
 	//Functions
@@ -41,6 +44,9 @@ private:
 	//Widget
 	UPROPERTY(EditDefaultsOnly, Category = Widget)
 	TSubclassOf<class UUserWidget> AmmoWidget;
+	
+	UPROPERTY(EditAnywhere, Category = Widget)
+	FTransform WidgetTransform;
 
 	class UWidgetComponent* AmmoWidgetComponent;
 

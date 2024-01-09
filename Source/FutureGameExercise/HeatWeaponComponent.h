@@ -71,6 +71,9 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = Widget)
 	TSubclassOf<class UUserWidget> HeatWidget;
 
+	UPROPERTY(EditAnywhere, Category = Widget)
+	FTransform WidgetTransform;
+
 	class UWidgetComponent* HeatWidgetComponent;
 
 	void SetupWidget();

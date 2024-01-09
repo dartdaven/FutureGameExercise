@@ -11,10 +11,10 @@
 
 UAmmoWeaponComponent::UAmmoWeaponComponent()
 {
-	MaxAmmo = 10;
-	CurrentAmmo = MaxAmmo; //TODO make different instances to have not default 10 max ammo as current ammo
-
 	AmmoWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("AmmoWidgetComponent"));
+
+	//Default parameters can be adjusted in blueprint
+	WidgetTransform = FTransform(FRotator(0.f, 270.f, 0.f), FVector(-10.f, 40.f, 20.f), FVector(0.15f));
 
 	WeaponName = TEXT("Default Ammo Weapon");
 }
@@ -44,6 +44,13 @@ const int& UAmmoWeaponComponent::GetCurrentAmmo() const
 const int& UAmmoWeaponComponent::GetMaxAmmo() const
 {
 	return MaxAmmo;
+}
+
+void UAmmoWeaponComponent::InitializeComponent()
+{
+	Super::InitializeComponent();
+
+	CurrentAmmo = MaxAmmo;
 }
 
 void UAmmoWeaponComponent::Fire()
@@ -93,9 +100,7 @@ void UAmmoWeaponComponent::SetupActionBindings()
 
 void UAmmoWeaponComponent::SetupWidget()
 {
-	//MagicNumbers Alert
-	AmmoWidgetComponent->SetRelativeLocationAndRotation(FVector(-10.f, 40.f, 20.f), FQuat(FRotator(0.f, 270.f, 0.f)));
-	AmmoWidgetComponent->SetRelativeScale3D(FVector(0.15f, 0.15f, 0.15f));
+	AmmoWidgetComponent->SetRelativeTransform(WidgetTransform);
 
 	AmmoWidgetComponent->SetCastShadow(false);
 

@@ -45,7 +45,6 @@ bool UTP_WeaponComponent::SetupActionBindings()
 	return false;
 }
 
-
 void UTP_WeaponComponent::Fire()
 {
 	FireImpl();

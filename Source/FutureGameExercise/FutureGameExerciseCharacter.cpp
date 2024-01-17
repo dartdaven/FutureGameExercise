@@ -198,12 +198,10 @@ void AFutureGameExerciseCharacter::OnWeaponPickUp(UTP_WeaponComponent* WeaponCom
 		FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, true);
 		WeaponComponent->AttachToComponent(GetMesh(), AttachmentRules, FName(TEXT("GripPoint")));
 
-		WeaponComponent->SetCharacter(this);
-		WeaponComponent->SetupWeapon();
+		WeaponComponent->SetupWeapon(this);
 
 		if (!bHasRifle) 
 		{
-			bHasRifle = true;
 			ActivateWeapon(WeaponComponent);
 		}
 		else
@@ -233,6 +231,7 @@ void AFutureGameExerciseCharacter::SwitchWeapon()
 	bHasRifle = false; //for animation purposes
 
 	DeactivateWeapon(ActiveWeapon);
+
 	OnWeaponSwitch.Broadcast();
 
 	auto CallbackWithArguments = [this, IndexOfNewWeapon]() { ActivateWeapon(Weapons[IndexOfNewWeapon]); };
@@ -245,36 +244,26 @@ void AFutureGameExerciseCharacter::SwitchWeapon()
 
 void AFutureGameExerciseCharacter::ActivateWeapon(UTP_WeaponComponent* WeaponToActivate)
 {
-	//TODO Check
-
-	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
+	if (IsValid(WeaponToActivate))
 	{
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
-		{
-			Subsystem->AddMappingContext(WeaponToActivate->GetMappingContext(), 1);
-		}
+		WeaponToActivate->SetupActionBindings();
+
+		WeaponToActivate->SetVisibility(true, true);
+
+		ActiveWeapon = WeaponToActivate;
+
+		bHasRifle = true;
 	}
-
-	WeaponToActivate->SetVisibility(true, true);
-
-	ActiveWeapon = WeaponToActivate;
-
-	bHasRifle = true;
 }
 
 void AFutureGameExerciseCharacter::DeactivateWeapon(UTP_WeaponComponent* WeaponToDeactivate)
 {
-	//TODO Check
-
-	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
+	if (IsValid(WeaponToDeactivate))
 	{
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
-		{
-			Subsystem->RemoveMappingContext(WeaponToDeactivate->GetMappingContext());
-		}
-	}
+		WeaponToDeactivate->ClearActionBindings();
 
-	WeaponToDeactivate->SetVisibility(false, true);
+		WeaponToDeactivate->SetVisibility(false, true);
+	}
 }
 
 void AFutureGameExerciseCharacter::StartThrowingGrenade()

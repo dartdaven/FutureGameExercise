@@ -24,7 +24,7 @@ protected:
 
 	void Fire() override;
 
-	void SetupWeapon() override;
+	void SetupWeapon(AFutureGameExerciseCharacter* a_Character) override;
 
 private:
 	UPROPERTY(EditDefaultsOnly, Category = Input)
@@ -51,5 +51,4 @@ private:
 	class UWidgetComponent* AmmoWidgetComponent;
 
 	void SetupWidget();
-
 };

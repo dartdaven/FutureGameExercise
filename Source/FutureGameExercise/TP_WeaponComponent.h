@@ -60,14 +60,16 @@ public:
 	
 	AFutureGameExerciseCharacter* GetCharacter() const;
 
-	void SetCharacter(AFutureGameExerciseCharacter* a_Character);
+	FString GetWeaponName() const { return WeaponName; }
 
-	virtual void SetupWeapon();
+	virtual void SetupWeapon(AFutureGameExerciseCharacter* a_Character);
 
-	FString GetWeaponName() { return WeaponName; }
+	virtual void SetupActionBindings();
+
+	void ClearActionBindings();
 
 protected:
-	bool SetupActionBindings();
+	void SetCharacter(AFutureGameExerciseCharacter* a_Character);
 
 	bool FireImpl();
 

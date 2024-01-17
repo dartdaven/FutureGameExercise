@@ -12,7 +12,7 @@ class FUTUREGAMEEXERCISE_API UHeatWeaponComponent : public UTP_WeaponComponent
 public:
 	UHeatWeaponComponent();
 
-	void SetupWeapon() override;
+	void SetupWeapon(AFutureGameExerciseCharacter* a_Character) override;
 
 	const float& GetTemperature() const;
 
@@ -65,7 +65,7 @@ private:
 
 	void ClearOverheat();
 
-	void SetupActionBindings();
+	void SetupActionBindings() override;
 	
 	//Widget
 	UPROPERTY(EditDefaultsOnly, Category = Widget)

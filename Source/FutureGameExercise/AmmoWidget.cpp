@@ -17,6 +17,7 @@ void UAmmoWidget::SetWeapon(UAmmoWeaponComponent* a_Weapon)
 		if (IsValid(Weapon->GetCharacter()))
 		{
 			Weapon->GetCharacter()->OnAmmoChange.AddDynamic(this, &UAmmoWidget::Refresh);
+			Weapon->GetCharacter()->OnWeaponSwitch.AddDynamic(this, &UAmmoWidget::Refresh);
 
 			Refresh();
 

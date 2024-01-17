@@ -27,13 +27,13 @@ void UHeatWeaponComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 	Temperature = FMath::Clamp(Temperature - (DeltaTime * CooldownRate), 0, MaxTemperature);
 }
 
-void UHeatWeaponComponent::SetupWeapon()
+void UHeatWeaponComponent::SetupWeapon(AFutureGameExerciseCharacter* a_Character)
 {
+	Super::SetupWeapon(a_Character);
+
 	SetupWidget();
 
 	Character->OnWeaponSwitch.AddDynamic(this, &UHeatWeaponComponent::StopFire);
-
-	SetupActionBindings();
 }
 
 void UHeatWeaponComponent::SetupActionBindings()
@@ -45,6 +45,11 @@ void UHeatWeaponComponent::SetupActionBindings()
 
 	if (APlayerController* PlayerController = Cast<APlayerController>(Character->GetController()))
 	{
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+		{
+			Subsystem->AddMappingContext(WeaponMappingContext, 1);
+		}
+
 		if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerController->InputComponent))
 		{
 			// Fire

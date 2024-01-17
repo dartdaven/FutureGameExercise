@@ -17,32 +17,49 @@ UTP_WeaponComponent::UTP_WeaponComponent()
 	MuzzleOffset = FVector(100.0f, 0.0f, 10.0f);
 }
 
-void UTP_WeaponComponent::SetupWeapon()
+void UTP_WeaponComponent::SetupWeapon(AFutureGameExerciseCharacter* a_Character)
 {
-	SetupActionBindings();
+	SetCharacter(a_Character);
 }
 
-bool UTP_WeaponComponent::SetupActionBindings()
+void UTP_WeaponComponent::SetupActionBindings()
 {
 	if (!IsValid(Character))
 	{
 		Help::DisplayErrorMessage(TEXT("%s: Unable to setup bindings due to the character is absent"), *GetNameSafe(this));
-		return false;
+		return;
 	}
 
 	// Set up action bindings
 	if (APlayerController* PlayerController = Cast<APlayerController>(Character->GetController()))
 	{
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+		{
+			Subsystem->AddMappingContext(WeaponMappingContext, 1);
+		}
+
 		if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerController->InputComponent))
 		{
 			// Fire
 			EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Triggered, this, &UTP_WeaponComponent::Fire);
-
-			return true;
 		}
 	}
+}
 
-	return false;
+void UTP_WeaponComponent::ClearActionBindings()
+{
+	if (APlayerController* PlayerController = Cast<APlayerController>(Character->GetController()))
+	{
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+		{
+			Subsystem->RemoveMappingContext(WeaponMappingContext);
+		}
+
+		if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerController->InputComponent))
+		{
+			EnhancedInputComponent->ClearBindingsForObject(this);
+		}
+	}
 }
 
 void UTP_WeaponComponent::Fire()
@@ -115,7 +132,7 @@ void UTP_WeaponComponent::SetCharacter(AFutureGameExerciseCharacter* a_Character
 {
 	if (!IsValid(a_Character))
 	{
-		Help::DisplayErrorMessage(TEXT("Wrong pointer was passed to a weapon as a character"));
+		Help::DisplayErrorMessage(TEXT("%s: Wrong pointer was passed to a weapon as a character"), *GetNameSafe(this));
 		return;
 	}
 

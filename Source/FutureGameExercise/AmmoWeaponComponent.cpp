@@ -76,26 +76,20 @@ void UAmmoWeaponComponent::Fire()
 	}
 }
 
-void UAmmoWeaponComponent::SetupWeapon()
+void UAmmoWeaponComponent::SetupWeapon(AFutureGameExerciseCharacter* a_Character)
 {
-		SetupWidget();
-
-		SetupActionBindings();
+	Super::SetupWeapon(a_Character);
+	
+	SetupWidget();
 }
 
 void UAmmoWeaponComponent::SetupActionBindings()
 {
-	//if setup of the parent is successfull
-	if (UTP_WeaponComponent::SetupActionBindings())
-	{
-		APlayerController* PlayerController = Cast<APlayerController>(Character->GetController());
-		UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerController->InputComponent);
-		EnhancedInputComponent->BindAction(ReloadAction, ETriggerEvent::Triggered, this, &UAmmoWeaponComponent::Reload);
-	}
-	else
-	{
-		Help::DisplayErrorMessage(TEXT("Something's wrong with bindings"));
-	}
+	Super::SetupActionBindings();
+
+	UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(Character->GetController()->InputComponent);
+
+	EnhancedInputComponent->BindAction(ReloadAction, ETriggerEvent::Triggered, this, &UAmmoWeaponComponent::Reload);
 }
 
 void UAmmoWeaponComponent::SetupWidget()

@@ -3,7 +3,7 @@
 #include "Components/TextBlock.h" 
 
 #include "../Weapons/AmmoWeaponComponent.h"
-#include "../FutureGameExerciseCharacter.h"
+#include "../MainCharacter.h"
 #include "../Misc/HelpingTools.h"
 
 void UAmmoWidget::SetWeapon(UAmmoWeaponComponent* a_Weapon)

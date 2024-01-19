@@ -1,7 +1,7 @@
-#include "TP_WeaponComponent.h"
+#include "WeaponComponent.h"
 
-#include "../FutureGameExerciseCharacter.h"
-#include "../Collectibles/FutureGameExerciseProjectile.h"
+#include "../MainCharacter.h"
+#include "../Collectibles/AmmoProjectile.h"
 #include "GameFramework/PlayerController.h"
 #include "Camera/PlayerCameraManager.h"
 #include "Kismet/GameplayStatics.h"
@@ -11,18 +11,18 @@
 #include "../Misc/HelpingTools.h"
 
 // Sets default values for this component's properties
-UTP_WeaponComponent::UTP_WeaponComponent()
+UWeaponComponent::UWeaponComponent()
 {
 	// Default offset from the character location for projectiles to spawn
 	MuzzleOffset = FVector(100.0f, 0.0f, 10.0f);
 }
 
-void UTP_WeaponComponent::SetupWeapon(AFutureGameExerciseCharacter* a_Character)
+void UWeaponComponent::SetupWeapon(AMainCharacter* a_Character)
 {
 	SetCharacter(a_Character);
 }
 
-void UTP_WeaponComponent::SetupActionBindings()
+void UWeaponComponent::SetupActionBindings()
 {
 	if (!IsValid(Character))
 	{
@@ -41,12 +41,12 @@ void UTP_WeaponComponent::SetupActionBindings()
 		if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerController->InputComponent))
 		{
 			// Fire
-			EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Triggered, this, &UTP_WeaponComponent::Fire);
+			EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Triggered, this, &UWeaponComponent::Fire);
 		}
 	}
 }
 
-void UTP_WeaponComponent::ClearActionBindings()
+void UWeaponComponent::ClearActionBindings()
 {
 	if (APlayerController* PlayerController = Cast<APlayerController>(Character->GetController()))
 	{
@@ -62,12 +62,12 @@ void UTP_WeaponComponent::ClearActionBindings()
 	}
 }
 
-void UTP_WeaponComponent::Fire()
+void UWeaponComponent::Fire()
 {
 	FireImpl();
 }
 
-bool UTP_WeaponComponent::FireImpl()
+bool UWeaponComponent::FireImpl()
 {
 	if (Character == nullptr || Character->GetController() == nullptr)
 	{
@@ -93,7 +93,7 @@ bool UTP_WeaponComponent::FireImpl()
 			ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
 	
 			// Spawn the projectile at the muzzle
-			World->SpawnActor<AFutureGameExerciseProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
+			World->SpawnActor<AAmmoProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
 
 			ProjectileFired = true;
 		}
@@ -123,12 +123,12 @@ bool UTP_WeaponComponent::FireImpl()
 	return ProjectileFired && SFXPlayed && AnimationPlayed;
 }
 
-AFutureGameExerciseCharacter* UTP_WeaponComponent::GetCharacter() const
+AMainCharacter* UWeaponComponent::GetCharacter() const
 {
 	return Character;
 }
 
-void UTP_WeaponComponent::SetCharacter(AFutureGameExerciseCharacter* a_Character)
+void UWeaponComponent::SetCharacter(AMainCharacter* a_Character)
 {
 	if (!IsValid(a_Character))
 	{
@@ -139,12 +139,12 @@ void UTP_WeaponComponent::SetCharacter(AFutureGameExerciseCharacter* a_Character
 	Character = a_Character;
 }
 
-const UInputMappingContext* UTP_WeaponComponent::GetMappingContext() const
+const UInputMappingContext* UWeaponComponent::GetMappingContext() const
 {
 	return WeaponMappingContext;
 }
 
-void UTP_WeaponComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
+void UWeaponComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	if (Character == nullptr)
 	{

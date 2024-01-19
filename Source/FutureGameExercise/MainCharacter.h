@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Logging/LogMacros.h"
-#include "FutureGameExerciseCharacter.generated.h"
+#include "MainCharacter.generated.h"
 
 class UInputComponent;
 class UCameraComponent;
@@ -13,13 +13,13 @@ class UInputAction;
 struct FInputActionValue;
 
 class AAmmoCollectible;
-class UTP_WeaponComponent;
+class UWeaponComponent;
 class UThrowStrengthRadialWidget;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 
 UCLASS(config=Game)
-class AFutureGameExerciseCharacter : public ACharacter
+class AMainCharacter : public ACharacter
 {
 	/* --- Default code section --- */
 
@@ -39,7 +39,7 @@ class AFutureGameExerciseCharacter : public ACharacter
 
 	
 public:
-	AFutureGameExerciseCharacter();
+	AMainCharacter();
 		
 	/* Look Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
@@ -91,25 +91,25 @@ public:
 	void OnAmmoPickUp(AAmmoCollectible* AmmoComponent);
 
 	UFUNCTION(BlueprintCallable, Category = Interaction)
-	void OnWeaponPickUp(UTP_WeaponComponent* WeaponComponent);
+	void OnWeaponPickUp(UWeaponComponent* WeaponComponent);
 
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnWeaponSwitch);
 	FOnWeaponSwitch OnWeaponSwitch;
 
 private:
 	//Weapon switching
-	TArray<UTP_WeaponComponent*> Weapons;
+	TArray<UWeaponComponent*> Weapons;
 
-	UTP_WeaponComponent* ActiveWeapon = nullptr;
+	UWeaponComponent* ActiveWeapon = nullptr;
 	
 	UPROPERTY(EditDefaultsOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* SwitchWeaponAction;
 	
 	void SwitchWeapon();
 
-	void ActivateWeapon(UTP_WeaponComponent* WeaponToActivate);
+	void ActivateWeapon(UWeaponComponent* WeaponToActivate);
 
-	void DeactivateWeapon(UTP_WeaponComponent* WeaponToDeactivate);
+	void DeactivateWeapon(UWeaponComponent* WeaponToDeactivate);
 
 	//Inventory
 	UPROPERTY(EditDefaultsOnly, Category = Inventory, meta = (AllowPrivateAccess = "true", ClampMin = "1", ClampMax = "100"))

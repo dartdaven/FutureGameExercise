@@ -1,11 +1,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "TP_WeaponComponent.h"
+#include "WeaponComponent.h"
 #include "AmmoWeaponComponent.generated.h"
 
 UCLASS(Blueprintable, BlueprintType, ClassGroup = (Custom), meta = (BlueprintSpawnableComponent) )
-class FUTUREGAMEEXERCISE_API UAmmoWeaponComponent : public UTP_WeaponComponent
+class FUTUREGAMEEXERCISE_API UAmmoWeaponComponent : public UWeaponComponent
 {
 	GENERATED_BODY()
 
@@ -24,7 +24,7 @@ protected:
 
 	void Fire() override;
 
-	void SetupWeapon(AFutureGameExerciseCharacter* a_Character) override;
+	void SetupWeapon(AMainCharacter* a_Character) override;
 
 private:
 	UPROPERTY(EditDefaultsOnly, Category = Input)

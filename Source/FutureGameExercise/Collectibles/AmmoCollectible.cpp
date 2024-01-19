@@ -3,16 +3,16 @@
 #include "GameFramework/RotatingMovementComponent.h"
 #include "Components/TextRenderComponent.h"
 
-#include "TP_PickUpComponent.h"
+#include "PickUpComponent.h"
 #include "../Misc/HelpingTools.h"
-#include "../FutureGameExerciseCharacter.h"
+#include "../MainCharacter.h"
 
 // Sets default values
 AAmmoCollectible::AAmmoCollectible()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	PickUpComponent = CreateDefaultSubobject<UTP_PickUpComponent>(TEXT("PickUpComponent"));
+	PickUpComponent = CreateDefaultSubobject<UPickUpComponent>(TEXT("PickUpComponent"));
 	RootComponent = PickUpComponent;
 
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
@@ -82,7 +82,7 @@ void AAmmoCollectible::Tick(float DeltaTime)
 	ContainingAmmoText->SetText(FText::FromString(FString::Printf(TEXT("%d"), ContainingAmmo))); //TODO find a better way to convert
 }
 
-void AAmmoCollectible::NotifyThePlayer(AFutureGameExerciseCharacter* aCharacter)
+void AAmmoCollectible::NotifyThePlayer(AMainCharacter* aCharacter)
 {
 	if (IsValid(aCharacter))
 	{

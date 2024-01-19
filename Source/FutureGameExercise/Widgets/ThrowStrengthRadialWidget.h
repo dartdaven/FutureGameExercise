@@ -12,10 +12,10 @@ class FUTUREGAMEEXERCISE_API UThrowStrengthRadialWidget : public UUserWidget
 	UPROPERTY(meta = (BindWidget))
 	class URadialSlider* RadialSlider;
 
-	class AFutureGameExerciseCharacter* Character;
+	class AMainCharacter* Character;
 
 public:
-	void SetCharacter(AFutureGameExerciseCharacter* aCharacter);
+	void SetCharacter(AMainCharacter* aCharacter);
 
 protected:
 	void NativeConstruct() override;

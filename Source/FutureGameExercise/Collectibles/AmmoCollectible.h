@@ -4,7 +4,7 @@
 #include "GameFramework/Actor.h"
 #include "AmmoCollectible.generated.h"
 
-class UTP_PickUpComponent;
+class UPickUpComponent;
 class URotatingMovementComponent;
 class UTextRenderComponent;
 class AFutureGameExcerciseCharacter;
@@ -51,7 +51,7 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = Appearance)
 	TObjectPtr<UStaticMesh> AmmoCollectibleMesh;
 
-	UTP_PickUpComponent* PickUpComponent;
+	UPickUpComponent* PickUpComponent;
 
 	URotatingMovementComponent* RotatingMovement;
 
@@ -61,5 +61,5 @@ private:
 	UTextRenderComponent* ContainingAmmoText;
 
 	UFUNCTION()
-	void NotifyThePlayer(AFutureGameExerciseCharacter* aCharacter);
+	void NotifyThePlayer(AMainCharacter* aCharacter);
 };

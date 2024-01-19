@@ -1,6 +1,6 @@
-#include "FutureGameExerciseCharacter.h"
+#include "MainCharacter.h"
 
-#include "Collectibles/FutureGameExerciseProjectile.h"
+#include "Collectibles/AmmoProjectile.h"
 #include "Animation/AnimInstance.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -13,15 +13,15 @@
 #include "Kismet/GameplayStatics.h"
 
 #include "Collectibles/AmmoCollectible.h"
-#include "Weapons/TP_WeaponComponent.h"
+#include "Weapons/WeaponComponent.h"
 #include "Misc/HelpingTools.h"
 #include "Collectibles/Grenade.h"
 #include "Widgets/ThrowStrengthRadialWidget.h"
-#include "Misc/FutureGameExercisePlayerController.h"
+#include "Misc/CustomPlayerController.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
-AFutureGameExerciseCharacter::AFutureGameExerciseCharacter()
+AMainCharacter::AMainCharacter()
 {
 	// Character doesnt have a rifle at start
 	bHasRifle = false;
@@ -49,7 +49,7 @@ AFutureGameExerciseCharacter::AFutureGameExerciseCharacter()
 }
 
 //Is called from a Pawn class 
-void AFutureGameExerciseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	// Set up action bindings
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
@@ -59,17 +59,17 @@ void AFutureGameExerciseCharacter::SetupPlayerInputComponent(UInputComponent* Pl
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
 
 		// Moving
-		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AFutureGameExerciseCharacter::Move);
+		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AMainCharacter::Move);
 
 		// Looking
-		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AFutureGameExerciseCharacter::Look);
+		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AMainCharacter::Look);
 
 		//Switch Weapon
-		EnhancedInputComponent->BindAction(SwitchWeaponAction, ETriggerEvent::Triggered, this, &AFutureGameExerciseCharacter::SwitchWeapon);
+		EnhancedInputComponent->BindAction(SwitchWeaponAction, ETriggerEvent::Triggered, this, &AMainCharacter::SwitchWeapon);
 
 		//Temp
-		EnhancedInputComponent->BindAction(ThrowGrenadeAction, ETriggerEvent::Started, this, &AFutureGameExerciseCharacter::StartThrowingGrenade);
-		EnhancedInputComponent->BindAction(ThrowGrenadeAction, ETriggerEvent::Completed, this, &AFutureGameExerciseCharacter::StopThrowingGrenade);
+		EnhancedInputComponent->BindAction(ThrowGrenadeAction, ETriggerEvent::Started, this, &AMainCharacter::StartThrowingGrenade);
+		EnhancedInputComponent->BindAction(ThrowGrenadeAction, ETriggerEvent::Completed, this, &AMainCharacter::StopThrowingGrenade);
 	}
 	else
 	{
@@ -77,17 +77,17 @@ void AFutureGameExerciseCharacter::SetupPlayerInputComponent(UInputComponent* Pl
 	}
 }
 
-void AFutureGameExerciseCharacter::SetHasRifle(bool bNewHasRifle)
+void AMainCharacter::SetHasRifle(bool bNewHasRifle)
 {
 	bHasRifle = bNewHasRifle;
 }
 
-bool AFutureGameExerciseCharacter::GetHasRifle()
+bool AMainCharacter::GetHasRifle()
 {
 	return bHasRifle;
 }
 
-void AFutureGameExerciseCharacter::Move(const FInputActionValue& Value)
+void AMainCharacter::Move(const FInputActionValue& Value)
 {
 	// input is a Vector2D
 	FVector2D MovementVector = Value.Get<FVector2D>();
@@ -100,7 +100,7 @@ void AFutureGameExerciseCharacter::Move(const FInputActionValue& Value)
 	}
 }
 
-void AFutureGameExerciseCharacter::Look(const FInputActionValue& Value)
+void AMainCharacter::Look(const FInputActionValue& Value)
 {
 	// input is a Vector2D
 	FVector2D LookAxisVector = Value.Get<FVector2D>();
@@ -113,7 +113,7 @@ void AFutureGameExerciseCharacter::Look(const FInputActionValue& Value)
 	}
 }
 
-int AFutureGameExerciseCharacter::TakeOutAmmo(const int& amountRequested)
+int AMainCharacter::TakeOutAmmo(const int& amountRequested)
 {
 	if (AmmoAmount >= amountRequested)
 	{
@@ -130,12 +130,12 @@ int AFutureGameExerciseCharacter::TakeOutAmmo(const int& amountRequested)
 	OnAmmoChange.Broadcast();
 }
 
-const int& AFutureGameExerciseCharacter::GetAmmoAmount() const
+const int& AMainCharacter::GetAmmoAmount() const
 {
 	return AmmoAmount;
 }
 
-void AFutureGameExerciseCharacter::OnAmmoPickUp(AAmmoCollectible* AmmoCollectible)
+void AMainCharacter::OnAmmoPickUp(AAmmoCollectible* AmmoCollectible)
 {
 	if (AmmoCollectible->GetType() == EAmmoType::Ammo)
 	{
@@ -153,7 +153,7 @@ void AFutureGameExerciseCharacter::OnAmmoPickUp(AAmmoCollectible* AmmoCollectibl
 
 		if (!bHasGrenade)
 		{
-			AFutureGameExercisePlayerController* PlayerController = GetController<AFutureGameExercisePlayerController>();
+			ACustomPlayerController* PlayerController = GetController<ACustomPlayerController>();
 			if (IsValid(PlayerController))
 			{
 				ThrowWidget = CreateWidget<UThrowStrengthRadialWidget>(PlayerController, ThrowWidgetClass);
@@ -172,7 +172,7 @@ void AFutureGameExerciseCharacter::OnAmmoPickUp(AAmmoCollectible* AmmoCollectibl
 	}
 }
 
-void AFutureGameExerciseCharacter::OnWeaponPickUp(UTP_WeaponComponent* WeaponComponent)
+void AMainCharacter::OnWeaponPickUp(UWeaponComponent* WeaponComponent)
 {
 	if (!IsValid(WeaponComponent))
 	{
@@ -182,7 +182,7 @@ void AFutureGameExerciseCharacter::OnWeaponPickUp(UTP_WeaponComponent* WeaponCom
 
 	bool IsAlreadyObtained{ false };
 
-	for (UTP_WeaponComponent* Weapon : Weapons)
+	for (UWeaponComponent* Weapon : Weapons)
 	{
 		if (WeaponComponent->GetWeaponName() == Weapon->GetWeaponName())
 		{
@@ -211,7 +211,7 @@ void AFutureGameExerciseCharacter::OnWeaponPickUp(UTP_WeaponComponent* WeaponCom
 	}
 }
 
-void AFutureGameExerciseCharacter::SwitchWeapon()
+void AMainCharacter::SwitchWeapon()
 {
 	if (Weapons.Num() <= 1) return;
 
@@ -242,7 +242,7 @@ void AFutureGameExerciseCharacter::SwitchWeapon()
 	GetWorld()->GetTimerManager().SetTimer(TimerHandle, CallbackWithArguments, .5f, false);
 }
 
-void AFutureGameExerciseCharacter::ActivateWeapon(UTP_WeaponComponent* WeaponToActivate)
+void AMainCharacter::ActivateWeapon(UWeaponComponent* WeaponToActivate)
 {
 	if (IsValid(WeaponToActivate))
 	{
@@ -256,7 +256,7 @@ void AFutureGameExerciseCharacter::ActivateWeapon(UTP_WeaponComponent* WeaponToA
 	}
 }
 
-void AFutureGameExerciseCharacter::DeactivateWeapon(UTP_WeaponComponent* WeaponToDeactivate)
+void AMainCharacter::DeactivateWeapon(UWeaponComponent* WeaponToDeactivate)
 {
 	if (IsValid(WeaponToDeactivate))
 	{
@@ -266,7 +266,7 @@ void AFutureGameExerciseCharacter::DeactivateWeapon(UTP_WeaponComponent* WeaponT
 	}
 }
 
-void AFutureGameExerciseCharacter::StartThrowingGrenade()
+void AMainCharacter::StartThrowingGrenade()
 {
 	if (GrenadeAmount < 1)
 	{
@@ -274,10 +274,10 @@ void AFutureGameExerciseCharacter::StartThrowingGrenade()
 		return;
 	}
 
-	GetWorld()->GetTimerManager().SetTimer(TimerHandle_ThrowStrengthIncreaser, this, &AFutureGameExerciseCharacter::IncrementThrowStrength, SecondsBetweenIncrementingThrowStrength, true);
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle_ThrowStrengthIncreaser, this, &AMainCharacter::IncrementThrowStrength, SecondsBetweenIncrementingThrowStrength, true);
 }
 
-void AFutureGameExerciseCharacter::StopThrowingGrenade()
+void AMainCharacter::StopThrowingGrenade()
 {
 	GetWorld()->GetTimerManager().ClearTimer(TimerHandle_ThrowStrengthIncreaser);
 
@@ -286,7 +286,7 @@ void AFutureGameExerciseCharacter::StopThrowingGrenade()
 	ThrowStrength = 0;
 }
 
-void AFutureGameExerciseCharacter::ThrowGrenade()
+void AMainCharacter::ThrowGrenade()
 {
 	if (GrenadeAmount < 1)
 	{
@@ -312,7 +312,7 @@ void AFutureGameExerciseCharacter::ThrowGrenade()
 	}
 }
 
-void AFutureGameExerciseCharacter::IncrementThrowStrength()
+void AMainCharacter::IncrementThrowStrength()
 {
 	//TODO logarithmic dependence not linear
 	ThrowStrength = FMath::Clamp(ThrowStrength + (SecondsBetweenIncrementingThrowStrength / SecondsToMaxThrowStrength), 0, 1);

@@ -1,10 +1,10 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 
-#include "FutureGameExercisePlayerController.h"
+#include "CustomPlayerController.h"
 #include "EnhancedInputSubsystems.h"
 
-void AFutureGameExercisePlayerController::BeginPlay()
+void ACustomPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 

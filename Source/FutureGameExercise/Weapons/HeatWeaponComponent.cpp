@@ -1,6 +1,6 @@
 #include "HeatWeaponComponent.h"
 
-#include "../FutureGameExerciseCharacter.h"
+#include "../MainCharacter.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Components/WidgetComponent.h"
@@ -27,7 +27,7 @@ void UHeatWeaponComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 	Temperature = FMath::Clamp(Temperature - (DeltaTime * CooldownRate), 0, MaxTemperature);
 }
 
-void UHeatWeaponComponent::SetupWeapon(AFutureGameExerciseCharacter* a_Character)
+void UHeatWeaponComponent::SetupWeapon(AMainCharacter* a_Character)
 {
 	Super::SetupWeapon(a_Character);
 
@@ -114,7 +114,7 @@ void UHeatWeaponComponent::Fire()
 		return;
 	}
 
-	if (UTP_WeaponComponent::FireImpl())
+	if (UWeaponComponent::FireImpl())
 	{
 		FScopeLock Lock(&TemperatureMutex);
 

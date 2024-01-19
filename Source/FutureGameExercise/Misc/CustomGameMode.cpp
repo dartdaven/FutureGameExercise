@@ -1,10 +1,10 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
-#include "FutureGameExerciseGameMode.h"
-#include "../FutureGameExerciseCharacter.h"
+#include "CustomGameMode.h"
+#include "../MainCharacter.h"
 #include "UObject/ConstructorHelpers.h"
 
-AFutureGameExerciseGameMode::AFutureGameExerciseGameMode()
+ACustomGameMode::ACustomGameMode()
 	: Super()
 {
 	// set default pawn class to our Blueprinted character

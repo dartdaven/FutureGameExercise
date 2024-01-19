@@ -4,7 +4,7 @@
 #include "Blueprint/UserWidget.h"
 #include "AmmoWidget.generated.h"
 
-class AFutureGameExerciseCharacter;
+class AMainCharacter;
 class UTextBlock;
 class UAmmoWeaponComponent;
 

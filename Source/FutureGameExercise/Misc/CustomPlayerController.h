@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
-#include "FutureGameExercisePlayerController.generated.h"
+#include "CustomPlayerController.generated.h"
 
 class UInputMappingContext;
 
@@ -12,7 +12,7 @@ class UInputMappingContext;
  *
  */
 UCLASS()
-class FUTUREGAMEEXERCISE_API AFutureGameExercisePlayerController : public APlayerController
+class FUTUREGAMEEXERCISE_API ACustomPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 	

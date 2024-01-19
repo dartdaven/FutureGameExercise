@@ -3,7 +3,7 @@
 #include "Components/RadialSlider.h"
 #include "Kismet/GameplayStatics.h"
 
-#include "../FutureGameExerciseCharacter.h"
+#include "../MainCharacter.h"
 #include "../Misc/HelpingTools.h"
 
 
@@ -37,7 +37,7 @@ void UThrowStrengthRadialWidget::NativeTick(const FGeometry& MyGeometry, float I
 	}
 }
 
-void UThrowStrengthRadialWidget::SetCharacter(AFutureGameExerciseCharacter* aCharacter)
+void UThrowStrengthRadialWidget::SetCharacter(AMainCharacter* aCharacter)
 {
 	Character = aCharacter;
 }

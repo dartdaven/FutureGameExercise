@@ -1,18 +1,18 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "TP_WeaponComponent.h"
+#include "WeaponComponent.h"
 #include "HeatWeaponComponent.generated.h"
 
 UCLASS(Blueprintable, BlueprintType, ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
-class FUTUREGAMEEXERCISE_API UHeatWeaponComponent : public UTP_WeaponComponent
+class FUTUREGAMEEXERCISE_API UHeatWeaponComponent : public UWeaponComponent
 {
 	GENERATED_BODY()
 
 public:
 	UHeatWeaponComponent();
 
-	void SetupWeapon(AFutureGameExerciseCharacter* a_Character) override;
+	void SetupWeapon(AMainCharacter* a_Character) override;
 
 	const float& GetTemperature() const;
 

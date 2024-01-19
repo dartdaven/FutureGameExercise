@@ -6,7 +6,7 @@
 #include "Components/WidgetComponent.h"
 
 #include "../Widgets/AmmoWidget.h"
-#include "../FutureGameExerciseCharacter.h"
+#include "../MainCharacter.h"
 #include "../Misc/HelpingTools.h"
 
 UAmmoWeaponComponent::UAmmoWeaponComponent()
@@ -62,7 +62,7 @@ void UAmmoWeaponComponent::Fire()
 	}
 
 	//If the parent fired successfully
-	if (UTP_WeaponComponent::FireImpl())
+	if (UWeaponComponent::FireImpl())
 	{
 		--CurrentAmmo;
 
@@ -76,7 +76,7 @@ void UAmmoWeaponComponent::Fire()
 	}
 }
 
-void UAmmoWeaponComponent::SetupWeapon(AFutureGameExerciseCharacter* a_Character)
+void UAmmoWeaponComponent::SetupWeapon(AMainCharacter* a_Character)
 {
 	Super::SetupWeapon(a_Character);
 	

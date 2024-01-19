@@ -4,15 +4,15 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
-#include "FutureGameExerciseGameMode.generated.h"
+#include "CustomGameMode.generated.h"
 
 UCLASS(minimalapi)
-class AFutureGameExerciseGameMode : public AGameModeBase
+class ACustomGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
 
 public:
-	AFutureGameExerciseGameMode();
+	ACustomGameMode();
 };
 
 

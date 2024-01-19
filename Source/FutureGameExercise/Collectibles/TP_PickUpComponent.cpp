@@ -2,7 +2,7 @@
 
 #include "TP_PickUpComponent.h"
 
-#include "HelpingTools.h"
+#include "../Misc/HelpingTools.h"
 
 UTP_PickUpComponent::UTP_PickUpComponent()
 {

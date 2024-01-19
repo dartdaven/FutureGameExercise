@@ -1,12 +1,12 @@
 #include "HeatWeaponComponent.h"
 
-#include "FutureGameExerciseCharacter.h"
+#include "../FutureGameExerciseCharacter.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Components/WidgetComponent.h"
 
-#include "HeatBarWidget.h"
-#include "HelpingTools.h"
+#include "../Widgets/HeatBarWidget.h"
+#include "../Misc/HelpingTools.h"
 
 UHeatWeaponComponent::UHeatWeaponComponent()
 {

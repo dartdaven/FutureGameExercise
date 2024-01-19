@@ -3,8 +3,8 @@
 #include "Components/RadialSlider.h"
 #include "Kismet/GameplayStatics.h"
 
-#include "FutureGameExerciseCharacter.h"
-#include "HelpingTools.h"
+#include "../FutureGameExerciseCharacter.h"
+#include "../Misc/HelpingTools.h"
 
 
 void UThrowStrengthRadialWidget::NativeConstruct()

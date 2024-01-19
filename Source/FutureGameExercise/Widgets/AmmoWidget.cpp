@@ -2,9 +2,9 @@
 
 #include "Components/TextBlock.h" 
 
-#include "AmmoWeaponComponent.h"
-#include "FutureGameExerciseCharacter.h"
-#include "HelpingTools.h"
+#include "../Weapons/AmmoWeaponComponent.h"
+#include "../FutureGameExerciseCharacter.h"
+#include "../Misc/HelpingTools.h"
 
 void UAmmoWidget::SetWeapon(UAmmoWeaponComponent* a_Weapon)
 {

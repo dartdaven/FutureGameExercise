@@ -6,7 +6,7 @@
 #include "PhysicsEngine/RadialForceComponent.h"
 #include "Particles/ParticleSystem.h"
 
-#include "HelpingTools.h"
+#include "../Misc/HelpingTools.h"
 
 // Sets default values
 AGrenade::AGrenade()

@@ -4,8 +4,8 @@
 #include "Components/TextRenderComponent.h"
 
 #include "TP_PickUpComponent.h"
-#include "HelpingTools.h"
-#include "FutureGameExerciseCharacter.h"
+#include "../Misc/HelpingTools.h"
+#include "../FutureGameExerciseCharacter.h"
 
 // Sets default values
 AAmmoCollectible::AAmmoCollectible()

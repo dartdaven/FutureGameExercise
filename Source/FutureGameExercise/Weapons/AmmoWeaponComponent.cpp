@@ -5,9 +5,9 @@
 #include "EnhancedInputSubsystems.h"
 #include "Components/WidgetComponent.h"
 
-#include "AmmoWidget.h"
-#include "FutureGameExerciseCharacter.h"
-#include "HelpingTools.h"
+#include "../Widgets/AmmoWidget.h"
+#include "../FutureGameExerciseCharacter.h"
+#include "../Misc/HelpingTools.h"
 
 UAmmoWeaponComponent::UAmmoWeaponComponent()
 {

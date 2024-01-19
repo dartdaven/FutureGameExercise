@@ -1,7 +1,7 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "FutureGameExerciseGameMode.h"
-#include "FutureGameExerciseCharacter.h"
+#include "../FutureGameExerciseCharacter.h"
 #include "UObject/ConstructorHelpers.h"
 
 AFutureGameExerciseGameMode::AFutureGameExerciseGameMode()

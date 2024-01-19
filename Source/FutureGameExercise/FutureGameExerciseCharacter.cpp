@@ -1,6 +1,6 @@
 #include "FutureGameExerciseCharacter.h"
 
-#include "FutureGameExerciseProjectile.h"
+#include "Collectibles/FutureGameExerciseProjectile.h"
 #include "Animation/AnimInstance.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -12,12 +12,12 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 
-#include "AmmoCollectible.h"
-#include "TP_WeaponComponent.h"
-#include "HelpingTools.h"
-#include "Grenade.h"
-#include "ThrowStrengthRadialWidget.h"
-#include "FutureGameExercisePlayerController.h"
+#include "Collectibles/AmmoCollectible.h"
+#include "Weapons/TP_WeaponComponent.h"
+#include "Misc/HelpingTools.h"
+#include "Collectibles/Grenade.h"
+#include "Widgets/ThrowStrengthRadialWidget.h"
+#include "Misc/FutureGameExercisePlayerController.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 

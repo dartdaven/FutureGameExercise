@@ -3,8 +3,8 @@
 #include "Components/TextBlock.h"
 #include "Components/ProgressBar.h"
 
-#include "HeatWeaponComponent.h"
-#include "HelpingTools.h"
+#include "../Weapons/HeatWeaponComponent.h"
+#include "../Misc/HelpingTools.h"
 
 
 void UHeatBarWidget::SetWeapon(UHeatWeaponComponent* a_Weapon)

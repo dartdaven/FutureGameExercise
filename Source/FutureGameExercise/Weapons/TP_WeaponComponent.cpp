@@ -1,14 +1,14 @@
 #include "TP_WeaponComponent.h"
 
-#include "FutureGameExerciseCharacter.h"
-#include "FutureGameExerciseProjectile.h"
+#include "../FutureGameExerciseCharacter.h"
+#include "../Collectibles/FutureGameExerciseProjectile.h"
 #include "GameFramework/PlayerController.h"
 #include "Camera/PlayerCameraManager.h"
 #include "Kismet/GameplayStatics.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 
-#include "HelpingTools.h"
+#include "../Misc/HelpingTools.h"
 
 // Sets default values for this component's properties
 UTP_WeaponComponent::UTP_WeaponComponent()

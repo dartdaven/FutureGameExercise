@@ -6,49 +6,56 @@ All items marked with a "-" are literally technical specifications for what need
 All items marked with a "+" are currently implemented
 
 ## Weapon Design:  
-\+ There will be 2 kinds of weapon (Weapon with Ammo Mechanic, Weapon with Heat Mechanic)  
+\+ There is 2 kinds of weapon (Weapon with Ammo Mechanic, Weapon with Heat Mechanic)  
 \+ Each mechanic represents a component  
-\+ Every weapon kind contains its own Widget
+\+ Every weapon has its own Widget  
+\+ Player can take different instances of the same weapon class with different Properties
 
 **Ammo Mechanic Design:**  
 \+ When ammo in the rifle equals zero, the weapon does not shoot  
 \+ When you press R, ammo from inventory refills lacking ammo in the rifle  
-\+ Ammo in the rifle can't be more than 10
-\+ Ammo in the inventory can't be more than 30
+\+ Ammo in the rifle can't be more than 10 (adjustable)  
+\+ Ammo in the inventory can't be more than 30 (adjustable)  
 
 **Ammo Widget Design:**  
 \+ Widget appears only when you pick up Rifle  
 \+ There are 2 numbers on the widget (ammo in the rifle / ammo in the inventory)  
-\+ When current ammo becomes 5 the text becomes yellow  
-\+ When it becomes 2 the text becomes red and flickers
+\+ When current ammo becomes less than 40% (adjustable) the text becomes yellow  
+\+ When less than 20% (adjustable) the text becomes red and !(-) flickers  
 
-**Heat Mechanic:**
+**Heat Mechanic:**  
 \+ Shoot while the mouse button is pressed via a certain interval  
 \+ Interval between shots can be set via blueprint  
 \+ The player can't overcome that interval by simply factor-clicking  
 \+ Every shot increases the heat bar by a certain amount  
 \+ Temperature is constantly dropping  
 \+ When the temperature exceeds a certain amount the weapon becomes overheated  
-\+ When the weapon is overheated you can't shoot till the temperature drops down to 20% of the temperature range
+\+ When the weapon is overheated you can't shoot till the temperature drops down to 20% (adjustable) of the temperature range
 
 **Heat Widget Design:**  
 \+ Represents bar of the percentage of current weapon Temperature related to MaxTemperature  
 \- When the temperature is over 0.6, the bar becomes yellow, when the temperature is over 0.8, the bar becomes red.  
-\+ When the weapon is overheated show "Overheated" text, and hide it when overheated cools down  
+\+ When the weapon is overheated show "Overheated" text, and hide it when the weapon cools down  
 
 ## Grenade design  
-\- Grenade has consumable type and is not considered weapon  
-\- Grenade is to be thrown by separate button  
-\- Explodes after some time after being thrown  
-\- When explodes has blast wave that pushes objects around
+\+ Grenade explodes after 3 seconds (adjustible) after been thrown  
+\+ When the grenade explodes, it pushes every dynamic object with physics on a scene in a direction away from the grenade  
+\+ Grenade can bounce  
+\+ When a grenade hits an object, it pushes it  
+\+ Grenade don't explode on hit  
+\+ Spawn point of the grenade is bound to the Camera  
+\+ Grenade can be thrown with different strength  
+\+ The more you hold the bottom of Grenade Throthing the more the strength of the throw  
+\+ The strength of the throw cannot exceed the cap  
+\+ There's a Radial widget that represents the strength of the throw  
 
-## Inventory design  
-\- collectibles have different types (consumables, weapons)  
-\- non inventory items should not be stored in other actors that has no inventory component  
-\- player should bw able to switch between weapon types
-\- every invetory item has it's limit 
+## Ammo Collectible:  
+\+ You can pick up different types of ammo (ammo, grenade)  
+\+ When the collectible type is ammo, there's a text number representing how much ammo is left in the collectible  
+\+ You can't take more ammo than fits in your inventory  
+\+ The ammo collectible actor is only destroyed when the amount of the ammo becomes 0  
+\+ Mesh appearance is chosen during BeginPlay in dependence on what type is set  
 
-## Collectibles design  
-\+ text of amount of consumables is always faced to the player  
-\+ collectibles are given to player in amount player can carry 
-\+ collectible actor is only destroyed when the amount of the collectible becomes 0
+## Misc:  
+\+ Debug messages by simple function/macro  
+\- The aspect ratio of the device does not affect on distance to the weapon  

@@ -86,7 +86,10 @@ void UHeatWeaponComponent::StartFire()
 
 	Fire();
 
-	GetWorld()->GetTimerManager().SetTimer(TimerHandle_Cooldown, this, &UHeatWeaponComponent::Fire, FireInterval, true);
+	if (!bIsOverheated)
+	{
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle_Cooldown, this, &UHeatWeaponComponent::Fire, FireInterval, true);
+	}
 }
 
 void UHeatWeaponComponent::StopFire()
@@ -107,7 +110,7 @@ void UHeatWeaponComponent::StopFire()
 
 void UHeatWeaponComponent::Fire()
 {
-	if (IsOverheated())
+	if (bIsOverheated)
 	{
 		//TODO sound unable to fire
 

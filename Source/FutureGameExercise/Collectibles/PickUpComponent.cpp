@@ -8,6 +8,7 @@ UPickUpComponent::UPickUpComponent()
 {
 	// Setup the Sphere Collision
 	SphereRadius = 32.f;
+	SetCollisionResponseToAllChannels(ECR_Overlap);
 }
 
 void UPickUpComponent::BeginPlay()
@@ -20,12 +21,13 @@ void UPickUpComponent::BeginPlay()
 
 void UPickUpComponent::OnSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	Help::DisplayDebugMessage(TEXT("Overlap happened"));
 
 	// Checking if it is a First Person Character overlapping
 	AMainCharacter* Character = Cast<AMainCharacter>(OtherActor);
 	if(IsValid(Character))
 	{
+		Help::DisplayDebugMessage(TEXT("Overlap happened"));
+
 		// Notify that the actor is being picked up
 		OnPickUp.Broadcast(Character);
 

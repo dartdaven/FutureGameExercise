@@ -16,7 +16,7 @@ AAmmoCollectible::AAmmoCollectible()
 	RootComponent = PickUpComponent;
 
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
-	Mesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
+	Mesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	Mesh->SetupAttachment(RootComponent);
 
 	RotatingMovement = CreateDefaultSubobject<URotatingMovementComponent>(TEXT("RotatingMovement"));

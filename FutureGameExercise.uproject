@@ -7,6 +7,15 @@
 		{
 			"Name": "FutureGameExercise",
 			"Type": "Runtime",
+			"LoadingPhase": "Default",
+			"AdditionalDependencies": [
+				"Engine",
+				"UMG"
+			]
+		},
+		{
+			"Name": "AdvancedWidgets",
+			"Type": "Runtime",
 			"LoadingPhase": "Default"
 		}
 	],
